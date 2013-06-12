@@ -2755,12 +2755,6 @@ public final class Settings {
          */
         public static final String PIE_TRIGGER_SHOW = "pie_trigger_show";
 
-       /**
-         * HALO enabled, should default to 0 (HALO is disabled)
-         * @hide
-         */
-        public static final String HALO_ENABLED = "halo_enabled";
-
         /**
          * Pie IME softkeyboard state toggle (0 or 1)
          * @hide
@@ -2785,6 +2779,12 @@ public final class Settings {
          */
         public static final String PIE_BUTTON_PRESSED_COLOR = "pie_button_pressed_color";
 
+	/**
+         * HALO enabled, should default to 0 (HALO is disabled)
+         * @hide
+         */
+        public static final String HALO_ENABLED = "halo_enabled";
+
  	/**
          * HALO, should default to 0 (no, do not show)
          * @hide
@@ -2808,6 +2808,13 @@ public final class Settings {
          * @hide
          */
         public static final String HALO_SIZE = "halo_size";
+
+	/**
+         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
+         * otherwise it defaults to 1 (yes, do pause)
+         * @hide
+         */
+        public static final String HALO_PAUSE = "halo_pause";
 
         /**
          * Pie button long press color
