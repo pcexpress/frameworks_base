@@ -2686,7 +2686,16 @@ public final class Settings {
          * Pie button color
          * @hide
          */
+
         public static final String PIE_BUTTON_COLOR = "pie_button_color";
+
+        public static final String STATUS_BAR_CLOCK = "status_bar_clock";
+        
+        /**
+         * Network speed indicator
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
 
         /**
          * Pie button press color
