@@ -4321,8 +4321,25 @@ public final class Settings {
          * Should be in milliseconds. 0 to disable
          * @hide
          */
+
         public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD = "mute_annoying_notifications_threshold";
-    }
+
+        public static final String NOTIFICATION_CONVERT_SOUND_TO_VIBRATION = "convert_sound_to_vibration";
+
+        /**
+         * ListView Animations [WIP]
+         * 0 == None
+         * 1 == Wave (Left)
+         * 2 == Wave (Right)
+         * 3 == Scale
+         * 4 == Alpha
+         * 5 == Stack (Top)
+         * 6 == Stack (Bottom)
+         * 7 == Translate (Left)
+         * 8 == Translate (Right)
+         */
+         public static final String LISTVIEW_ANIMATION = "listview_animation";
+  }
 
     /**
      * Secure system settings, containing system preferences that applications
