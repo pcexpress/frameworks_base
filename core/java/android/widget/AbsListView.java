@@ -76,6 +76,7 @@ import java.util.List;
 import android.view.animation.Animation;  
 import android.view.animation.ScaleAnimation;  
 import android.view.animation.TranslateAnimation;  
+import android.view.animation.AnimationUtils;
 
 /**
  * Base class that can be used to implement virtualized lists of items. A list does
@@ -2245,9 +2246,35 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 break;
         }
         anim.setDuration(500);
+        int mInterpolator = Settings.System.getInt(mContext.getContentResolver(),Settings.System.LISTVIEW_INTERPOLATOR, 0);
+        switch (mInterpolator) {
+            case 1:
+                anim.setInterpolator(loadInterpolator(this, android.R.anim.accelerate_interpolator);
+                break;
+            case 2:
+                anim.setInterpolator(loadInterpolator(this, android.R.anim.decelerate_interpolator);
+                break;
+            case 3:
+                anim.setInterpolator(loadInterpolator(this, android.R.anim.accelerate_decelerate_interpolator);
+                break;
+            case 4:
+                anim.setInterpolator(loadInterpolator(this, android.R.anim.anticipate_interpolator);
+                break;
+            case 5:
+                anim.setInterpolator(loadInterpolator(this, android.R.anim.overshoot_interpolator);
+                break;
+            case 6:
+                anim.setInterpolator(loadInterpolator(this, android.R.anim.anticipate_overshoot_interpolator);
+                break;
+            case 7:
+                anim.setInterpolator(loadInterpolator(this, android.R.anim.bounce_interpolator);
+                break;
+        }      
         view.startAnimation(anim);
         return view;
     }
+ 
+    
 
     class ListItemAccessibilityDelegate extends AccessibilityDelegate {
         @Override
