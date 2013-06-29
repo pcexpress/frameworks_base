@@ -2224,7 +2224,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         switch(mAnim){
 
     View setAnimation(View view) {
-        int mAnim = Settings.System.getInt(mContext.getContentResolver(),Settings.System.LISTVIEW_ANIMATION, 1);
+        int mAnim = Settings.System.getInt(mContext.getContentResolver(),Settings.System.LISTVIEW_ANIMATION, 0);
         int scrollY = 0;
 
         try {
