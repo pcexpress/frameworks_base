@@ -2297,7 +2297,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 anim.setInterpolator(loadInterpolator(this, android.R.anim.bounce_interpolator);
                 break;
         }      
-        view.startAnimation(anim);
+        if (view != null) {
+        	view.startAnimation(anim);
+        }
         return view;
     }
  
