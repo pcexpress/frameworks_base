@@ -75,8 +75,12 @@ import java.util.List;
 import java.lang.NullPointerException;
 
 import android.view.animation.Animation;  
+<<<<<<< HEAD
+=======
+import android.view.animation.AlphaAnimation;   
+>>>>>>> 4cbea66... ListViewAnimation: Fix when loading view not update animation
 import android.view.animation.ScaleAnimation;  
-import android.view.animation.TranslateAnimation;  
+import android.view.animation.TranslateAnimation;
 import android.view.animation.AnimationUtils;
 
 /**
@@ -696,6 +700,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     /**
      * for ListView Animations
      */
+    boolean mIsWidget;
     boolean mIsScrolling;
     int mWidth, mHeight;
 
@@ -2163,7 +2168,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         View child;
         if (scrapView != null) {
             child = mAdapter.getView(position, scrapView, this);
-            if (child.getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+
+
+            if(mIsScrolling && !mIsWidget) {
+                child = setAnimation(child);
+            }
+
+          if (child.getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
                 child.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
             }
 
@@ -3160,6 +3171,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     mScrollProfilingStarted = true;
                 }
             }
+            mIsWidget = false;
 
             if (mScrollStrictSpan == null) {
                 // If it's non-null, we're already in a scroll.
@@ -5334,7 +5346,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
     @Override
     protected void handleDataChanged() {
-        mIsScrolling = false;
+        mIsWidget = true;
         int count = mItemCount;
         int lastHandledItemCount = mLastHandledItemCount;
         mLastHandledItemCount = mItemCount;
