@@ -37,6 +37,7 @@
     <drawable name="notification_icon_area_smoke">#aa000000</drawable>
     <color name="notification_panel_scrim_color">#B0000000</color>
 
+
     <!-- Notification Shortcuts -->
     <drawable name="notification_shortcut_background_color">#00000000</drawable>
     <drawable name="notification_item_background_color">#ff111111</drawable>
@@ -53,4 +54,9 @@
     <color name="pie_selected_color">@android:color/holo_blue_light</color>
     <color name="pie_long_pressed_color">#ff8ad5f0</color>
     <color name="pie_outline_color">#ff0099cc</color>
+
+   <!-- Halo colors -->
+   <color name="halo_ping_color">#ff33b5e5</color>
+   <color name="halo_text_color">#ffffffff</color>
+
 </resources>
