@@ -19,8 +19,6 @@ package com.android.systemui.statusbar;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
-import android.graphics.drawable.Drawable;
-import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -227,6 +225,7 @@ public class SignalClusterView
         if (mWifiGroup == null) return;
 
         if (mWifiVisible) {
+            mWifi.setImageResource(mWifiStrengthId);
             mWifiActivity.setImageResource(mWifiActivityId);
 
             mWifiGroup.setContentDescription(mWifiDescription);
@@ -241,7 +240,6 @@ public class SignalClusterView
                     mWifiStrengthId, mWifiActivityId));
 
         if (mMobileVisible && !mIsAirplaneMode) {
-           
             mMobile.setImageResource(mMobileStrengthId);
             mMobileActivity.setImageResource(mMobileActivityId);
             mMobileType.setImageResource(mMobileTypeId);
@@ -253,16 +251,15 @@ public class SignalClusterView
         }
 
         if (mIsAirplaneMode) {
-           
-	    mAirplane.setImageResource(mAirplaneIconId);
+            mAirplane.setImageResource(mAirplaneIconId);
             mAirplane.setVisibility(View.VISIBLE);
         } else {
             mAirplane.setVisibility(View.GONE);
         }
 
         if (mEtherVisible) {
-           
-	    mEther.setImageResource(mEtherIconId);
+            mEther.setVisibility(View.VISIBLE);
+            mEther.setImageResource(mEtherIconId);
             mEther.setContentDescription(mEtherDescription);
         } else {
             mEther.setVisibility(View.GONE);
