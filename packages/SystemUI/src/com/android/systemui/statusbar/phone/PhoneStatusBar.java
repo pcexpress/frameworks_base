@@ -102,6 +102,7 @@ import com.android.internal.util.slim.ButtonsConstants;
 import com.android.internal.util.slim.ButtonsHelper;
 import com.android.systemui.R;
 import com.android.systemui.EventLogTags;
+import com.android.systemui.statusbar.AppSidebar;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.CommandQueue;
 import com.android.systemui.statusbar.GestureRecorder;
@@ -406,8 +407,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_SETTINGS_BUTTON), false, this);
-	    update();
-        }
+  	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.APP_SIDEBAR_POSITION), false, this, UserHandle.USER_ALL);
+            update();
+       }
 
         @Override
         public void onChange(boolean selfChange) {
@@ -431,9 +434,15 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIFICATION_HIDE_CARRIER, 0, UserHandle.USER_CURRENT) != 0;
             boolean notificationSettingsBtn = Settings.System.getInt(
                     resolver, Settings.System.NOTIFICATION_SETTINGS_BUTTON, 0) == 1;
-          
-            if (mHasSettingsPanel) {
-                mSettingsButton.setVisibility(notificationSettingsBtn ? View.VISIBLE : View.GONE);
+       
+            int sidebarPosition = Settings.System.getInt(
+                    resolver, Settings.System.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
+            if (sidebarPosition != mSidebarPosition) {
+                mSidebarPosition = sidebarPosition;
+                mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
+ 
+	    if (mHasSettingsPanel) {
+               mSettingsButton.setVisibility(notificationSettingsBtn ? View.VISIBLE : View.GONE);
             } else {
                 mSettingsButton.setVisibility(View.GONE);
             }
@@ -442,8 +451,9 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
             if (mNotificationData != null) {
                 updateStatusBarVisibility();
-            }
-            showClock(true);
+            }            
+
+            showClock(true); 
         }
     }
 
@@ -608,7 +618,11 @@ public class PhoneStatusBar extends BaseStatusBar {
             addNavigationBarCallback(mNavigationBarView);
         }
 
-        addActiveDisplayView();
+	if (mRecreating) {
+            removeSidebarView();
+        }
+        addSidebarView();
+	addActiveDisplayView();
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
@@ -681,7 +695,7 @@ to make sure there are no context issues */
             }
 
         }
-mHaloButton = (ImageView) mStatusBarWindow.findViewById(R.id.halo_button);
+	mHaloButton = (ImageView) mStatusBarWindow.findViewById(R.id.halo_button);
         if (mHaloButton != null) {
             mHaloButton.setOnClickListener(mHaloButtonListener);
             mHaloButtonVisible = true;
@@ -729,7 +743,7 @@ mHaloButton = (ImageView) mStatusBarWindow.findViewById(R.id.halo_button);
 
         TickerView tickerView = (TickerView)mStatusBarView.findViewById(R.id.tickerText);
         tickerView.mTicker = mTicker;
-if (mHaloActive) mTickerView.setVisibility(View.GONE);
+        if (mHaloActive) mTickerView.setVisibility(View.GONE);
 
         mEdgeBorder = res.getDimensionPixelSize(R.dimen.status_bar_edge_ignore);
 
@@ -2337,13 +2351,13 @@ if (mHaloButtonAnim != null) mHaloButtonAnim.cancel();
                 }
             }, FLIP_DURATION - 150);
 
-mHaloButtonAnim = start(
+	mHaloButtonAnim = start(
             setVisibilityWhenDone(
                 ObjectAnimator.ofFloat(mHaloButton, View.ALPHA, 0f)
                     .setDuration(FLIP_DURATION),
                     mScrollView, View.INVISIBLE));
          
-if (mNotificationShortcutsIsActive) {
+	if (mNotificationShortcutsIsActive) {
                 mNotificationPanel.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -2389,7 +2403,7 @@ if (mNotificationShortcutsIsActive) {
             if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
             if (mPowerWidgetAnim != null) mPowerWidgetAnim.cancel();
             if (mScrollViewAnim != null) mScrollViewAnim.cancel();
-if (mQuickSettingsButtonAnim != null) mQuickSettingsButtonAnim.cancel();
+	    if (mQuickSettingsButtonAnim != null) mQuickSettingsButtonAnim.cancel();
             if (mHaloButtonAnim != null) mHaloButtonAnim.cancel();
             if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
             if (mClearButtonAnim != null) mClearButtonAnim.cancel();
@@ -2724,7 +2738,7 @@ if (mQuickSettingsButtonAnim != null) mQuickSettingsButtonAnim.cancel();
             final View battery2 = mStatusBarView.findViewById(R.id.battery_text);
             final View battery3 = mStatusBarView.findViewById(R.id.circle_battery);
             final View clock = mStatusBarView.findViewById(R.id.clock);
-final View traffic = mStatusBarView.findViewById(R.id.traffic);
+	    final View traffic = mStatusBarView.findViewById(R.id.traffic);
             final AnimatorSet lightsOutAnim = new AnimatorSet();
             lightsOutAnim.playTogether(
                     ObjectAnimator.ofFloat(notifications, View.ALPHA, 0),
@@ -2735,7 +2749,7 @@ final View traffic = mStatusBarView.findViewById(R.id.traffic);
                     ObjectAnimator.ofFloat(battery2, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(battery3, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(clock, View.ALPHA, 0.5f),
-ObjectAnimator.ofFloat(traffic, View.ALPHA, 0.5f)
+		    ObjectAnimator.ofFloat(traffic, View.ALPHA, 0.5f)
                 );
             lightsOutAnim.setDuration(750);
 
@@ -2749,7 +2763,7 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 0.5f)
                     ObjectAnimator.ofFloat(battery2, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(battery3, View.ALPHA, 1),
                     ObjectAnimator.ofFloat(clock, View.ALPHA, 1),
-ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
+		    ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
                 );
             lightsOnAnim.setDuration(250);
 
@@ -3282,16 +3296,34 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
                 if (DEBUG) {
                     Slog.v(TAG, "configuration changed: " + mContext.getResources().getConfiguration());
                 }
-	    Configuration config = mContext.getResources().getConfiguration();
-                mDisplay.getSize(mCurrentDisplaySize);
+
+                Configuration config = mContext.getResources().getConfiguration();
+               mDisplay.getSize(mCurrentDisplaySize);
                 updateResources();
                 repositionNavigationBar();
                 updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
                 updateSwapXY();
                 updateShowSearchHoldoff();
-	    
-            } else if (Intent.ACTION_SCREEN_ON.equals(action)) {
-                // work around problem where mDisplay.getRotation() is not stable while screen is off (bug 7086018)
+
+                try {
+                    // position app sidebar on left if in landscape orientation and device has a navbar
+                    if (mWindowManagerService.hasNavigationBar() &&
+                                NavbarEditor.isDevicePhone(mContext) &&
+                                config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        mWindowManager.updateViewLayout(mAppSidebar,
+                                    getAppSidebarLayoutParams(AppSidebar.SIDEBAR_POSITION_LEFT));
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAppSidebar.setPosition(AppSidebar.SIDEBAR_POSITION_LEFT);
+                            }
+                        }, 500);
+                    }
+                } catch (RemoteException e) {
+                }
+            }
+            else if (Intent.ACTION_SCREEN_ON.equals(action)) {
+               // work around problem where mDisplay.getRotation() is not stable while screen is off (bug 7086018)
                 repositionNavigationBar();
                 notifyNavigationBarScreenOn(true);
             }
