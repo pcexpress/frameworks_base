@@ -46,7 +46,7 @@ import com.android.systemui.statusbar.phone.QuickSettingsController;
 public class CameraTile extends QuickSettingsTile {
     private static final String DEFAULT_IMAGE_FILE_NAME_FORMAT = "'IMG'_yyyyMMdd_HHmmss";
     private static final int CAMERA_ID = 0;
-
+public static CameraTile mInstance; 
     private Handler mHandler;
     private TextView mTextView;
     private FrameLayout mSurfaceLayout;
@@ -241,8 +241,17 @@ public class CameraTile extends QuickSettingsTile {
         }
     };
 
-    public CameraTile(Context context, QuickSettingsController qsc, Handler handler) {
-        super(context, qsc, R.layout.quick_settings_tile_camera);
+     public static QuickSettingsTile getInstance(Context context, LayoutInflater inflater,
+            QuickSettingsContainerView container, final QuickSettingsController qsc, Handler handler, String id) {
+        mInstance = null;
+        mInstance = new CameraTile(context, inflater, container, qsc, handler);
+        return mInstance;
+    }
+
+    public CameraTile(Context context, LayoutInflater inflater,
+            QuickSettingsContainerView container,
+            QuickSettingsController qsc, Handler handler) {
+        super(context, inflater, container, qsc, R.layout.quick_settings_tile_camera); 
         mHandler = handler;
 
         String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;

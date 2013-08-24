@@ -64,6 +64,7 @@ public class QuickSettingsTile implements OnClickListener {
     public QuickSettingsTile(Context context, LayoutInflater inflater,
             QuickSettingsContainerView container, QuickSettingsController qsc) {
         mContext = context;
+mContainer = container;
         mContainerView = container;
         mInflater = inflater;
         mDrawable = R.drawable.ic_notifications;
@@ -87,7 +88,7 @@ public class QuickSettingsTile implements OnClickListener {
     void createQuickSettings() {
         mTile = (QuickSettingsTileView) mInflater.inflate(R.layout.quick_settings_tile, mContainerView, false);
         mTile.setContent(mTileLayout, mInflater);
-        mContainer = container;
+        
         mContainer.addView(mTile);
         mContainerView.addView(mTile);
         mTile.addOnLayoutChangeListener(new OnLayoutChangeListener() {
@@ -145,7 +146,7 @@ public class QuickSettingsTile implements OnClickListener {
     }
 
     @Override
-    public final void onClick(View v) {
+    public void onClick(View v) {
         mOnClick.onClick(v);
         ContentResolver resolver = mContext.getContentResolver();
         boolean shouldCollapse = Settings.System.getInt(resolver, Settings.System.QS_COLLAPSE_PANEL, 0) == 1;
