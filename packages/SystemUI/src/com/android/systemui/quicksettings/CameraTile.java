@@ -47,6 +47,7 @@ public class CameraTile extends QuickSettingsTile {
     private static final String DEFAULT_IMAGE_FILE_NAME_FORMAT = "'IMG'_yyyyMMdd_HHmmss";
     private static final int CAMERA_ID = 0;
 public static CameraTile mInstance; 
+
     private Handler mHandler;
     private TextView mTextView;
     private FrameLayout mSurfaceLayout;
@@ -241,7 +242,7 @@ public static CameraTile mInstance;
         }
     };
 
-     public static QuickSettingsTile getInstance(Context context, LayoutInflater inflater,
+   public static QuickSettingsTile getInstance(Context context, LayoutInflater inflater,
             QuickSettingsContainerView container, final QuickSettingsController qsc, Handler handler, String id) {
         mInstance = null;
         mInstance = new CameraTile(context, inflater, container, qsc, handler);
@@ -249,11 +250,11 @@ public static CameraTile mInstance;
     }
 
     public CameraTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container,
-            QuickSettingsController qsc, Handler handler) {
-        super(context, inflater, container, qsc, R.layout.quick_settings_tile_camera); 
-        mHandler = handler;
+            QuickSettingsContainerView container, QuickSettingsController qsc, Handler handler) {
+        super(context, inflater, container, qsc);
+       mHandler = handler;
 
+        mTileLayout = R.layout.quick_settings_tile_camera;
         String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
         try {
             final Resources camRes = context.getPackageManager()
@@ -267,8 +268,7 @@ public static CameraTile mInstance;
             // Use default
         }
         mImageNameFormatter = new SimpleDateFormat(imageFileNameFormat);
-
-    }
+ }
 
     @Override
     void onPostCreate() {
@@ -294,6 +294,10 @@ public static CameraTile mInstance;
 
     @Override
     public void onClick(View v) {
+
+if (isEnabled()) {
+                    flipTile(0);
+                } 
         if (mCamera == null) {
             mHandler.post(mStartRunnable);
         } else {
@@ -302,7 +306,7 @@ public static CameraTile mInstance;
     }
 
     private PanelView getContainingPanel() {
-        ViewParent parent = mContainer;
+        ViewParent parent = mContainerView;
         while (parent != null) {
             if (parent instanceof PanelView) {
                 return (PanelView) parent;

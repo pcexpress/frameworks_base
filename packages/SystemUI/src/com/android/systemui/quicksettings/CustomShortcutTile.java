@@ -76,6 +76,9 @@ public class CustomShortcutTile extends QuickSettingsTile
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
                  if (mShortcutUri != null && mShortcutUri.length() > 0) {
                     try {
                         Intent i = Intent.parseUri(mShortcutUri, 0);

@@ -275,6 +275,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private DeviceKeyHandler mDeviceKeyHandler;
+    private boolean mIsFloating;
 
     /**
      * Lock protecting internal state.  Must not call out into window
@@ -5107,6 +5108,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+ 
+
+
+
     ProgressDialog mBootMsgDialog = null;
 
     /** {@inheritDoc} */
@@ -5125,7 +5130,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             return true;
                         }
                         @Override public boolean dispatchTouchEvent(MotionEvent ev) {
-                            return true;
+ 
+ 			    return true;
                         }
                         @Override public boolean dispatchTrackballEvent(MotionEvent ev) {
                             return true;
@@ -5157,6 +5163,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         });
     }
+
 
     /** {@inheritDoc} */
     public void hideBootMessages() {

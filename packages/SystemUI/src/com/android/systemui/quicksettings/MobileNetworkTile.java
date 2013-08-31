@@ -60,6 +60,9 @@ public class MobileNetworkTile extends QuickSettingsTile implements NetworkSigna
 
             @Override
             public void onClick(View v) {
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
             }
         };
         mOnLongClick = new OnLongClickListener() {

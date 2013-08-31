@@ -2504,6 +2504,34 @@ public final class Settings {
         public static final String DESK_DOCK_SOUND = Global.DESK_DOCK_SOUND;
 
         /**
+         * User configurable background for qs tiles
+         * 0 = random colors
+         * 1 = colorpicker preference
+         * 2 = default background
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_BACKGROUND_STYLE = "quick_settings_background_style";
+
+
+   	/** Quick Settings tiles flip onClick
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_TILES_FLIP = "quick_settings_tiles_flip";
+ 
+
+        /**
+         * User color for tile background
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_BACKGROUND_COLOR = "quick_settings_background_color";
+
+        /**
+         * User color for text background
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_TEXT_COLOR = "quick_settings_text_color";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#DESK_UNDOCK_SOUND}
          * instead
          * @hide
@@ -2550,6 +2578,37 @@ public final class Settings {
          * @hide
          */
         public static final String SIP_RECEIVE_CALLS = "sip_receive_calls";
+
+        /**
+         * Random user selected colors
+         * @hide
+         */
+        public static final String RANDOM_COLOR_ONE = "random_color_one";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_TWO = "random_color_two";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_THREE = "random_color_three";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_FOUR = "random_color_four";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_FIVE = "random_color_five";
+
+        /**
+         * @hide
+         */
+        public static final String RANDOM_COLOR_SIX = "random_color_six";
 
         /**
          * Call Preference String.
@@ -2670,11 +2729,58 @@ public final class Settings {
          */
         public static final String PIE_TRIGGER_SHOW = "pie_trigger_show";
 
-        /**
-         * Pie IME softkeyboard state toggle (0 or 1)
+ /**
+* Pie IME softkeyboard state toggle (0 or 1)
+* @hide
+*/
+        public static final String PIE_SOFTKEYBOARD_IS_SHOWING = "pie_softkeyboard_is_showing";
+
+
+  
+       /**
+         * HALO enabled, should default to 0 (HALO is disabled)
          * @hide
          */
-        public static final String PIE_SOFTKEYBOARD_IS_SHOWING = "pie_softkeyboard_is_showing";
+        public static final String HALO_ENABLED = "halo_enabled";
+
+        /**
+
+         * HALO being minimal.
+         * @hide
+         */
+        public static final String HALO_STYLE = "halo_style";
+
+        /**
+         * HALO colors
+         * @hide
+         */
+        public static final String HALO_COLORS = "halo_colors";
+
+        /**
+         * HALO speech bubble color
+         * @hide
+         */
+        public static final String HALO_BUBBLE_COLOR = "halo_bubble_color";
+
+        /**
+         * HALO speech bubble text color
+         * @hide
+         */
+        public static final String HALO_BUBBLE_TEXT_COLOR = "halo_bubble_text_color";
+
+        /**
+         * HALO effect color
+         * @hide
+         */
+        public static final String HALO_EFFECT_COLOR = "halo_effect_color";
+
+        /**
+         * HALO circle bg color
+         * @hide
+         */
+        public static final String HALO_CIRCLE_COLOR = "halo_circle_color";
+
+        
 
         /**
          * Pie allow to adjust triggers if IME is showing (0 or 1)
@@ -2689,13 +2795,16 @@ public final class Settings {
 
         public static final String PIE_BUTTON_COLOR = "pie_button_color";
 
-        public static final String STATUS_BAR_CLOCK = "status_bar_clock";
-        
-        /**
-         * Network speed indicator
+        /* StatusBar Network speed indicator
          * @hide
          */
         public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
+        
+        /**
+         * StatusBar Network speed indicator color
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC_COLOR = "status_bar_traffic_color";
 
         /**
          * Pie button press color
@@ -2714,6 +2823,8 @@ public final class Settings {
          * @hide
          */
         public static final String PIE_BUTTON_OUTLINE_COLOR = "pie_button_outline_color";
+
+	public static final String VIBRATION_MULTIPLIER = "vibration_multiplier";
 
         /**
          * Pie background color
@@ -3330,19 +3441,61 @@ public final class Settings {
         public static final String SYSTEM_POWER_ENABLE_CRT_OFF = "system_power_enable_crt_off";
 
         /**
-         * Electronic beam animation mode
-         * 0 = always horizontal, 1 = always vertical, 2 = dependent on orientation
+         
+         * HALO, should default to 0 (no, do not show)
          * @hide
          */
-        public static final String SYSTEM_POWER_CRT_MODE = "system_power_crt_mode";
+        public static final String HALO_ACTIVE = "halo_active";
 
         /**
-         * Enable Stylus Gestures
-         *
+         * HALO reversed?, should default to 1 (yes, reverse)
          * @hide
          */
+        public static final String HALO_REVERSED = "halo_reversed";
+
+        /**
+         * HALO hide?, should default to 0 (no, do not hide)
+         * @hide
+         */
+        public static final String HALO_HIDE = "halo_hide";
+ 	
+	/**
+
+         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
+         * otherwise it defaults to 1 (yes, do pause)
+         * @hide
+         */
+        public static final String HALO_PAUSE = "halo_pause";
+	
+	/**
+         * Electronic beam animation mode
+         * 0 = always horizontal, 1 = always vertical, 2 = dependent on orientation
+	 *@hide	
+	 */
+       public static final String SYSTEM_POWER_CRT_MODE = "system_power_crt_mode";
+
+
+       
+
+	 /**
+	 * Enable Stylus Gestures
+	  *
+	 * @hide
+	 */
         public static final String ENABLE_STYLUS_GESTURES = "enable_stylus_gestures";
 
+    
+        /**
+         * HALO size fraction, default is 1.0f (normal)
+         * @hide
+         */
+        public static final String HALO_SIZE = "halo_size";
+
+        /**
+         * Swap volume buttons when the screen is rotated by 90 or 180 degrees
+         * @hide
+         */
+       
         /**
          * Left Swipe Action
          *
@@ -4333,8 +4486,7 @@ public final class Settings {
 
         public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD = "mute_annoying_notifications_threshold";
 
-        public static final String NOTIFICATION_CONVERT_SOUND_TO_VIBRATION = "convert_sound_to_vibration";
-
+       
         /**
          * ListView Animations [WIP]
          * 0 == None
@@ -4348,9 +4500,6 @@ public final class Settings {
          * 8 == Translate (Right)
          */
          public static final String LISTVIEW_ANIMATION = "listview_animation";
-
-  }
-
 
         /**
          * ListView Interpolators
@@ -5624,6 +5773,8 @@ public final class Settings {
          */
         @Deprecated
         public static final String WIFI_IDLE_MS = Global.WIFI_IDLE_MS;
+
+	
 
         /**
          * The global search provider chosen by the user (if multiple global

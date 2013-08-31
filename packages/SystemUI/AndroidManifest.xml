@@ -82,7 +82,12 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
 
-    <application
+
+    <!--Halo-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    
+  <application
         android:persistent="true"
         android:allowClearUserData="false"
         android:allowBackup="false"
@@ -257,10 +262,14 @@
             </intent-filter>
         </activity>
 
+
         <!-- started from Custom Shortcut Tile -->
         <activity
             android:name=".quicksettings.ShortcutPickerActivity"
             android:label="@string/customshortcut_chooser_title"/>
 
-    </application>
+
+        <activity android:name="com.android.systemui.Transparent"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+   </application>
 </manifest>

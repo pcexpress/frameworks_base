@@ -50,6 +50,9 @@ public class RebootTile extends QuickSettingsTile implements PanelBarCollapseLis
                rebootToRecovery = !rebootToRecovery;
                updateTileState();
                updateQuickSettings();
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
             }
         };
         mOnLongClick = new View.OnLongClickListener() {

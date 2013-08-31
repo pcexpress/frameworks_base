@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 public class Traffic extends TextView {
 
-	
     private boolean mAttached;
     TrafficStats mTrafficStats;
     boolean showTraffic;
@@ -27,6 +26,7 @@ public class Traffic extends TextView {
     Handler mTrafficHandler;
     float speed;
     float totalRxBytes;
+int mTrafficColor;
 
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -68,6 +68,7 @@ public class Traffic extends TextView {
 
         if (!mAttached) {
             mAttached = true;
+            mTrafficColor = getTextColors().getDefaultColor();
             IntentFilter filter = new IntentFilter();
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             getContext().registerReceiver(mIntentReceiver, filter, null,
@@ -96,26 +97,31 @@ public class Traffic extends TextView {
     };
 
     public void updateTraffic() {
-        mTrafficHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                speed = (mTrafficStats.getTotalRxBytes() - totalRxBytes) / 1024 / 3;
-                totalRxBytes = mTrafficStats.getTotalRxBytes();
-                DecimalFormat DecimalFormatfnum = new DecimalFormat("###0");
-                if (speed / 1024 >= 1) {
-                    setText(DecimalFormatfnum.format(speed / 1024) + "MB/s");
-                } else if (speed <= 0.01) {
-                    setText(DecimalFormatfnum.format(speed * 1024) + "B/s");
-                } else {
-                    setText(DecimalFormatfnum.format(speed) + "KB/s");
-                }
-                update();
-                super.handleMessage(msg);
-            }
-        };
-        totalRxBytes = mTrafficStats.getTotalRxBytes();
-        mTrafficHandler.sendEmptyMessage(0);
-    }
+		mTrafficHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+
+				speed = (mTrafficStats.getTotalRxBytes() - totalRxBytes) / 1024 / 3;
+				totalRxBytes = mTrafficStats.getTotalRxBytes();
+				DecimalFormat DecimalFormatfnum = new DecimalFormat("##0.0");
+				if (speed == 0 ) setText("");
+				else if (speed / 1024 >= 1) {
+					setTextColor(mTrafficColor);
+					setText(DecimalFormatfnum.format(speed / 1024) + "MB/s");
+				} else if (speed <= 0.0099) {
+					setTextColor(mTrafficColor);
+					setText(DecimalFormatfnum.format(speed * 1024) + "B/s");
+				} else {
+					setTextColor(mTrafficColor);
+					setText(DecimalFormatfnum.format(speed) + "KB/s");
+				}
+				update();
+				super.handleMessage(msg);
+			}
+		};
+		totalRxBytes = mTrafficStats.getTotalRxBytes();
+		mTrafficHandler.sendEmptyMessage(0);
+	}
 
     private boolean getConnectAvailable() {
         try {
@@ -144,6 +150,15 @@ public class Traffic extends TextView {
 
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
+       
+	int newColor = 0;
+        
+        newColor = Settings.System.getInt(resolver,
+   	Settings.System.STATUS_BAR_TRAFFIC_COLOR, mTrafficColor);
+        if (newColor < 0 && newColor != mTrafficColor) {
+       		 mTrafficColor = newColor;
+       	
+        			}
         showTraffic = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_TRAFFIC, 1) == 1);
         if (showTraffic && getConnectAvailable()) {

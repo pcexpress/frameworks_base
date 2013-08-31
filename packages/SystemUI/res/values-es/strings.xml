@@ -202,6 +202,7 @@
     <string name="quick_settings_sync">Sincronizar</string>
     <string name="quick_settings_sync_off">Apagar sincronización</string>
     <string name="quick_settings_torch">Linterna</string>
+
     <string name="quick_settings_torch_off">Linterna apagada</string>
     <string name="quick_settings_nfc">NFC</string>
     <string name="quick_settings_nfc_off">NFC apagado</string>
@@ -312,4 +313,11 @@
         <item quantity="one">1 aplicación reciente</item>
         <item quantity="other">%d aplicaciones recientes</item>
     </plurals>
+
+    <string name="halo_dismiss">Descartar notificación</string>
+    <string name="halo_hide">Ocultar</string>
+    <string name="halo_clear_all">Limpiar todas las notificaciones</string>
+    <string name="halo_silence">Ocultar y silenciar hasta despertar</string>
+
+   
 </resources>
