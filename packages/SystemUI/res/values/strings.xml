@@ -525,7 +525,9 @@
 
     <string name="quick_settings_halo_on_label">Halo On</string>
     <string name="quick_settings_halo_off_label">Halo Off</string>
-    
+     
+    <!-- Title shown in recents popup for showing app in floating mode -->
+    <string name="status_bar_recent_floating_item_title">Floating mode</string>
 
     <!-- Halo -->
     <string name="halo_dismiss">Dismiss notification</string>
