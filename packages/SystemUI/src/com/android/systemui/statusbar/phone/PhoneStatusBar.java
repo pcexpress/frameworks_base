@@ -2378,7 +2378,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 
             mQuickSettingsButton.setAlpha(1f);
             mQuickSettingsButton.setVisibility(View.VISIBLE);
-	    mPowerWidget.updateVisibility();
             mHaloButton.setAlpha(1f);
             mHaloButtonVisible = true;
             updateHaloButton(); 
