@@ -538,5 +538,9 @@
     <string name="halo_tutorial2">Move me: 2x-tap &amp; drag</string>
     <string name="halo_tutorial3">Browse tasks: Horizontal drag</string>
 
+    <string name="quick_settings_camera_label">Camera</string> 
+    <!-- Camera tile toasts -->
+    <string name="quick_settings_camera_error_connect">Can\'t connect to camera</string> 
+
 
 </resources>
