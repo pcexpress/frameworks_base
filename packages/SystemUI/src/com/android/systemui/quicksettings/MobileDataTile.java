@@ -62,6 +62,9 @@ public class MobileDataTile extends QuickSettingsTile {
                 }else{
                     conMan.setMobileDataEnabled(true);
                 }
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
             }
         };
         mOnLongClick = new OnLongClickListener() {

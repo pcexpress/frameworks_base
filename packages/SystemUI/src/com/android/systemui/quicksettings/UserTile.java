@@ -35,7 +35,6 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Profile;
 import android.util.Log;
 import android.util.Pair;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManagerGlobal;
@@ -72,6 +71,10 @@ public class UserTile extends QuickSettingsTile {
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
                 mQsc.mBar.collapseAllPanels(true);
                 final UserManager um =
                         (UserManager) mContext.getSystemService(Context.USER_SERVICE);
@@ -104,18 +107,14 @@ public class UserTile extends QuickSettingsTile {
 
     @Override
     void updateQuickSettings() {
-        TextView tv = (TextView) mTile.findViewById(R.id.user_textview);
-        if (tv != null) {
-            tv.setText(mLabel);
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
-            if (mTileTextColor != -2) {
-                tv.setTextColor(mTileTextColor);
-            }
-        }
         ImageView iv = (ImageView) mTile.findViewById(R.id.user_imageview);
-        if (iv != null) {
-            iv.setImageDrawable(userAvatar);
+        TextView tv = (TextView) mTile.findViewById(R.id.user_textview);
+        tv.setText(mLabel);
+        tv.setTextSize(1, mTileTextSize);
+        if (mTileTextColor != -2) {
+            tv.setTextColor(mTileTextColor);
         }
+        iv.setImageDrawable(userAvatar);
     }
 
     private void queryForUserInformation() {

@@ -51,6 +51,10 @@ public class WifiAPTile extends QuickSettingsTile {
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
                 int state = mWifiManager.getWifiApState();
                 switch (state) {
                     case WifiManager.WIFI_AP_STATE_ENABLING:

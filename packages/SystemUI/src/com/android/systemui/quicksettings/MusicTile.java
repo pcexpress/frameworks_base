@@ -70,6 +70,9 @@ public class MusicTile extends QuickSettingsTile {
             @Override
             public void onClick(View v) {
                 sendMediaKeyEvent(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
             }
         };
 
@@ -90,10 +93,10 @@ public class MusicTile extends QuickSettingsTile {
 
     private void updateTile() {
         if (isMusicActive()) {
-            mDrawable = R.drawable.ic_qs_media_pause;
+            mDrawable = com.android.internal.R.drawable.ic_media_pause;
             mLabel = mContext.getString(R.string.quick_settings_music_pause);
         } else {
-            mDrawable = R.drawable.ic_qs_media_play;
+            mDrawable = com.android.internal.R.drawable.ic_media_play;
             mLabel = mContext.getString(R.string.quick_settings_music_play);
         }
         updateQuickSettings();

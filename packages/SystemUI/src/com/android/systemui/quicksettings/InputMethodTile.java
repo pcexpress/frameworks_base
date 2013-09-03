@@ -26,14 +26,12 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.systemui.R;
@@ -69,6 +67,9 @@ public class InputMethodTile extends QuickSettingsTile {
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
                     pendingIntent.send();
                 } catch (Exception e) {}
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
             }
         };
 
@@ -150,19 +151,13 @@ public class InputMethodTile extends QuickSettingsTile {
 
     @Override
     void updateQuickSettings() {
-        TextView tv = (TextView) mTile.findViewById(R.id.text);
-        if (tv != null) {
-                tv.setText(mLabel);
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
-            tv.setPadding(0, mTileTextPadding, 0, 0);
-            if (mTileTextColor != -2) {
-                tv.setTextColor(mTileTextColor);
-            }
+        TextView tv = (TextView) mTile.findViewById(R.id.tile_textview);
+        tv.setText(mLabel);
+        tv.setTextSize(1, mTileTextSize);
+        if (mTileTextColor != -2) {
+            tv.setTextColor(mTileTextColor);
         }
-        ImageView image = (ImageView) mTile.findViewById(R.id.image);
-        if (image != null) {
-            image.setImageResource(mDrawable);
-        }
+        tv.setCompoundDrawablesWithIntrinsicBounds(0, mDrawable, 0, 0);
         mTile.setVisibility(showTile ? View.VISIBLE : View.GONE);
         super.updateQuickSettings();
     }

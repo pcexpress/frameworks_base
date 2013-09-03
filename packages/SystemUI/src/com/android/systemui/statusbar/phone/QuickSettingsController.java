@@ -31,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.net.ConnectivityManager;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.Settings;
@@ -38,6 +39,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import com.android.systemui.quicksettings.QuickSettingsTile;
 import com.android.systemui.quicksettings.InputMethodTile;
+import com.android.systemui.quicksettings.CameraTile;
 
 import dalvik.system.DexClassLoader;
 import android.content.SharedPreferences;
@@ -64,6 +66,7 @@ public class QuickSettingsController {
      */
     public static final String TILE_AIRPLANE = "toggleAirplane";
     public static final String TILE_ALARM = "toggleAlarm";
+    public static final String TILE_CAMERA = "toggleCamera";
     public static final String TILE_CUSTOMSHORTCUT = "toggleCustomShortcut";
     public static final String TILE_AUTOROTATE = "toggleAutoRotate";
     public static final String TILE_BATTERY = "toggleBattery";
@@ -96,6 +99,7 @@ public class QuickSettingsController {
     public static final String TILE_WIFI = "toggleWifi";
     public static final String TILE_WIFIAP = "toggleWifiAp";
     public static final String TILE_WIFIDISPLAY = "toggleWifiDisplay";
+
     // not yet supported
     public static final String TILE_WIMAX = "toggleWimax";
 
@@ -104,6 +108,7 @@ public class QuickSettingsController {
     static {
         TILES_CLASSES.put(TILE_AIRPLANE, "com.android.systemui.quicksettings.AirplaneModeTile");
         TILES_CLASSES.put(TILE_ALARM, "com.android.systemui.quicksettings.AlarmTile");
+        TILES_CLASSES.put(TILE_CAMERA, "com.android.systemui.quicksettings.CameraTile");
         TILES_CLASSES.put(TILE_CUSTOMSHORTCUT, "com.android.systemui.quicksettings.CustomShortcutTile");
         TILES_CLASSES.put(TILE_AUTOROTATE, "com.android.systemui.quicksettings.AutoRotateTile");
         TILES_CLASSES.put(TILE_BATTERY, "com.android.systemui.quicksettings.BatteryTile");
@@ -243,6 +248,8 @@ public class QuickSettingsController {
             if (tileName.equals(TILE_BLUETOOTH)) {
                 qs = createTile(deviceSupportsBluetooth(), tileName, instanceID, inflater,
                     mStatusBarService.mBluetoothController);
+            } else if (tileName.equals(TILE_CAMERA)) {
+                qs = createTile(deviceSupportsCamera(), tileName, instanceID, inflater, null);
             } else if (tileName.equals(TILE_WIFIAP)
                 || tileName.equals(TILE_NETWORKMODE) || tileName.equals(TILE_MOBILEDATA)) {
                 qs = createTile(deviceSupportsTelephony(), tileName, instanceID, inflater, null);
@@ -273,7 +280,7 @@ public class QuickSettingsController {
     }
 
     private void cleanTilesContent() {
-        SharedPreferences allPrefs = mContext.getSharedPreferences("quick_settings_custom_shortcut", 0);
+        SharedPreferences allPrefs = mContext.getSharedPreferences("QuickSettingsTilesContent", 0);
         Map<String, ?> allTiles = allPrefs.getAll();
         for (String mTileID : allTiles.keySet()){
             if (!tiles.contains(mTileID)){
@@ -397,6 +404,10 @@ public class QuickSettingsController {
     boolean deviceSupportsUsbTether() {
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         return (cm.getTetherableUsbRegexs().length != 0);
+    }
+
+    boolean deviceSupportsCamera() {
+        return Camera.getNumberOfCameras() > 0;
     }
 
     boolean systemProfilesEnabled(ContentResolver resolver) {

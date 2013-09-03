@@ -110,6 +110,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private long mTotalMemory;
     private long mCachedMemory;
     private long mActiveMemory;
+  private RecentsActivity mRecentsActivity;
 
     TextView mUsedMemText;
     TextView mFreeMemText;
@@ -291,6 +292,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
         mRecentItemLayoutId = a.getResourceId(R.styleable.RecentsPanelView_recentItemLayout, 0);
         mRecentTasksLoader = RecentTasksLoader.getInstance(context);
+ mRecentsActivity = (RecentsActivity) context;
         a.recycle();
     }
 

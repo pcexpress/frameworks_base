@@ -24,14 +24,12 @@ import android.net.Uri;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.systemui.R;
@@ -40,22 +38,32 @@ import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsTileView;
 
+import java.util.Random; 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
+import android.animation.Animator.AnimatorListener;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException; 
+import android.os.Handler; 
+
 public class QuickSettingsTile implements OnClickListener {
 
     protected final Context mContext;
-    protected final ViewGroup mContainerView;
+    //protected final ViewGroup mContainerView;
     protected final LayoutInflater mInflater;
-
+    protected QuickSettingsContainerView mContainerView;
     protected QuickSettingsTileView mTile;
     protected OnClickListener mOnClick;
     protected OnLongClickListener mOnLongClick;
-
+  
     protected int mTileLayout;
     protected int mDrawable;
     protected int mTileTextSize;
-    protected int mTileTextPadding;
     protected int mTileTextColor;
     public static int mTileSize = 141;
+
+private Handler mHandler = new Handler();
 
     protected String mLabel;
     protected String name = "";
@@ -67,18 +75,16 @@ public class QuickSettingsTile implements OnClickListener {
     public QuickSettingsTile(Context context, LayoutInflater inflater,
             QuickSettingsContainerView container, QuickSettingsController qsc) {
         mContext = context;
-        mContainerView = container;
+       mContainerView = container;
+	//mContainer = container;
         mInflater = inflater;
         mDrawable = R.drawable.ic_notifications;
         mLabel = mContext.getString(R.string.quick_settings_label_enabled);
         mStatusbarService = qsc.mStatusBarService;
         mQsc = qsc;
-        mTileLayout = R.layout.quick_settings_tile_basic;
-
-        container.updateResources();
-        mTileTextSize = container.getTileTextSize();
-        mTileTextPadding = container.getTileTextPadding();
-        mTileTextColor = container.getTileTextColor();
+        mTileLayout = R.layout.quick_settings_tile_generic;
+        mTileTextSize = ((QuickSettingsContainerView) mContainerView).updateTileTextSize();
+        mTileTextColor = ((QuickSettingsContainerView) mContainerView).updateTileTextColor();
         mTileSize = mContext.getResources().getDimensionPixelSize(R.dimen.quick_settings_cell_height);
     }
 
@@ -93,6 +99,7 @@ public class QuickSettingsTile implements OnClickListener {
     void createQuickSettings() {
         mTile = (QuickSettingsTileView) mInflater.inflate(R.layout.quick_settings_tile, mContainerView, false);
         mTile.setContent(mTileLayout, mInflater);
+        //mContainer.addView(mTile);
         mContainerView.addView(mTile);
         mTile.addOnLayoutChangeListener(new OnLayoutChangeListener() {
             @Override
@@ -117,20 +124,21 @@ public class QuickSettingsTile implements OnClickListener {
 
     public void onChangeUri(ContentResolver resolver, Uri uri) {}
 
+public void updateResources() {
+        if(mTile != null) {
+            updateQuickSettings();
+        }
+    }
+
     void updateQuickSettings() {
-        TextView tv = (TextView) mTile.findViewById(R.id.text);
-        if (tv != null) {
-                tv.setText(mLabel);
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
-            tv.setPadding(0, mTileTextPadding, 0, 0);
-            if (mTileTextColor != -2) {
-                tv.setTextColor(mTileTextColor);
-            }
-        }
-        ImageView image = (ImageView) mTile.findViewById(R.id.image);
-        if (image != null) {
-            image.setImageResource(mDrawable);
-        }
+        TextView tv = (TextView) mTile.findViewById(R.id.tile_textview);
+  if (tv != null) {
+        tv.setCompoundDrawablesWithIntrinsicBounds(0, mDrawable, 0, 0);
+        tv.setText(mLabel);
+        tv.setTextSize(1, mTileTextSize);
+        if (mTileTextColor != -2) {
+            tv.setTextColor(mTileTextColor);
+        }}
     }
 
     void startSettingsActivity(String action) {
@@ -154,17 +162,91 @@ public class QuickSettingsTile implements OnClickListener {
         mStatusbarService.animateCollapsePanels();
     }
 
+
+
     @Override
-    public final void onClick(View v) {
+    public void onClick(View v) {
+ if (mOnClick != null) {
         mOnClick.onClick(v);
         ContentResolver resolver = mContext.getContentResolver();
         boolean shouldCollapse = Settings.System.getInt(resolver, Settings.System.QS_COLLAPSE_PANEL, 0) == 1;
         if (shouldCollapse) {
             mQsc.mBar.collapseAllPanels(true);
         }
-    }
+if (isEnabled()) {
+            doFlip();
+        } 
+    }}
 
     public String getTileContent() {
         return name;
     }
+ public boolean isEnabled() {
+        return (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QUICK_SETTINGS_TILES_FLIP, 1) == 1);
+    } 
+public void flipTile(int delay){
+        final AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(
+                mContext, R.anim.flip_right);
+        anim.setTarget(mTile);
+        anim.setDuration(200);
+        anim.addListener(new AnimatorListener(){
+
+            @Override
+            public void onAnimationEnd(Animator animation) {}
+            @Override
+            public void onAnimationStart(Animator animation) {}
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+
+        });
+
+        Runnable doAnimation = new Runnable(){
+            @Override
+            public void run() {
+                anim.start();
+            }
+        };
+
+        mHandler.postDelayed(doAnimation, delay);
+    } 
+
+ public void flipOtherTiles(final QuickSettingsTileView view, int delay){
+        final AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(
+                mContext, R.anim.flip_left);
+        anim.setTarget(view);
+       anim.setDuration(200);
+        anim.addListener(new AnimatorListener(){
+
+            @Override
+            public void onAnimationEnd(Animator animation) {}
+            @Override
+            public void onAnimationStart(Animator animation) {}
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+
+        });
+
+        Runnable doAnimation = new Runnable(){
+            @Override
+            public void run() {
+                anim.start();
+            }
+        };
+
+        mHandler.postDelayed(doAnimation, delay);
+    } 
+private void doFlip() {
+        int delay = 0;
+        for (int x = 0; x < mContainerView.getChildCount(); x++) {
+            QuickSettingsTileView tileView = (QuickSettingsTileView)mContainerView.getChildAt(x);
+            delay += 100;
+            flipOtherTiles(tileView, delay);
+        }
+    } 
+
 }

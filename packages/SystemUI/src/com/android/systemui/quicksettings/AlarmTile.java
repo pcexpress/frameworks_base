@@ -57,6 +57,9 @@ public class AlarmTile extends QuickSettingsTile{
                         "com.android.deskclock",
                         "com.android.deskclock.AlarmClock"));
                 startSettingsActivity(intent);
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
             }
         };
         qsc.registerObservedContent(Settings.System.getUriFor(

@@ -65,7 +65,9 @@ public class ToggleLockscreenTile extends QuickSettingsTile {
             @Override
             public void onClick(View v) {
                 mDisabledLockscreen = !mDisabledLockscreen;
-
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
                 SharedPreferences.Editor editor = mPrefs.edit();
                 editor.putBoolean(KEY_DISABLED, mDisabledLockscreen);
                 editor.apply();

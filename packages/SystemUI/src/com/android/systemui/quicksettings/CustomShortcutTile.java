@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -47,10 +46,10 @@ public class CustomShortcutTile extends QuickSettingsTile
     private Drawable mAvatar = null;
     private String mShortcutUri;
     private String mCustomIcon;
-    private String mName;
     private Resources mResources;
     private SharedPreferences mPrefs;
     private int mIconResourceId = 0;
+    private int mIconDimens;
 
     public static QuickSettingsTile getInstance(Context context, LayoutInflater inflater,
             QuickSettingsContainerView container, final QuickSettingsController qsc, Handler handler, String id) {
@@ -61,15 +60,25 @@ public class CustomShortcutTile extends QuickSettingsTile
             QuickSettingsContainerView container,
             QuickSettingsController qsc, Handler handler, String id) {
         super(context, inflater, container, qsc);
-        tileID = QuickSettingsController.TILE_CUSTOMSHORTCUT + "+" + id;
+        tileID = QuickSettingsController.TILE_CUSTOMSHORTCUT+"+"+id;
         mResources = mContext.getResources();
-        mPrefs = mContext.getSharedPreferences("quick_settings_custom_shortcut", 0);
+        mPrefs = context.getSharedPreferences("QuickSettingsTilesContent", 0);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
-        getLabelAndIcon();
+        mShortcutUri = mPrefs.getString(tileID, null);
+        if (mShortcutUri != null) {
+            setLabelAndIcon();
+        }
+        float iconDpDimens = (mContext.getResources()
+            .getDimension(R.dimen.shortcut_picker_default_icon_size));
+        mIconDimens = (int) ((iconDpDimens * mContext.getResources()
+                .getDisplayMetrics().density) + 0.5);
 
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+ if (isEnabled()) {
+                    flipTile(0);
+                } 
                  if (mShortcutUri != null && mShortcutUri.length() > 0) {
                     try {
                         Intent i = Intent.parseUri(mShortcutUri, 0);
@@ -87,7 +96,7 @@ public class CustomShortcutTile extends QuickSettingsTile
         mOnLongClick = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Intent i = new Intent(mContext, ShortcutPickerActivity.class);
+                Intent i=new Intent(mContext, ShortcutPickerActivity.class);
                 i.putExtra("hashCode", tileID);
                 i.putExtra("iconSize", QuickSettingsTile.mTileSize);
                 startSettingsActivity(i);
@@ -96,16 +105,11 @@ public class CustomShortcutTile extends QuickSettingsTile
         };
     }
 
-    private void getLabelAndIcon() {
+    void setLabelAndIcon() {
         Intent i;
         try {
-            if (mAvatar == null) {
-                mAvatar = mResources.getDrawable(R.drawable.ic_qs_shortcut_andy);
-            }
             mShortcutUri = mPrefs.getString(tileID, null);
-            if (mShortcutUri == null) {
-                return;
-            }
+            if (mShortcutUri == null) return;
             i = Intent.parseUri(mShortcutUri, 0);
             mCustomIcon = i.getStringExtra(ShortcutPickerActivity.ICON_FILE);
             if (mCustomIcon != null) {
@@ -122,9 +126,9 @@ public class CustomShortcutTile extends QuickSettingsTile
             if (ShortcutPickHelper.mContext == null) {
                 ShortcutPickHelper.mContext = mContext;
             }
-            mName = ShortcutPickHelper.getFriendlyNameForUri(mShortcutUri);
-            if (mName.contains(":")) {
-                mName = mName.substring(mName.indexOf(":") + 2);
+            name = ShortcutPickHelper.getFriendlyNameForUri(mShortcutUri);
+            if (name.contains(":")) {
+                name = name.substring(name.indexOf(":") + 2);
             }
         }catch(Exception e) {
             e.printStackTrace();
@@ -133,7 +137,6 @@ public class CustomShortcutTile extends QuickSettingsTile
 
     @Override
     void updateQuickSettings() {
-        getLabelAndIcon();
         int shortCutType = 0;
         if (mCustomIcon != null && mCustomIcon.endsWith(".png")) {
             if (mShortcutUri != null &&
@@ -149,8 +152,14 @@ public class CustomShortcutTile extends QuickSettingsTile
         }
         inflateView(shortCutType > 0);
 
-        ImageView overlay = (ImageView) mTile.findViewById(R.id.image_overlay);
-        if (overlay != null) {
+        if (mAvatar == null) {
+            mAvatar = mResources.getDrawable(R.drawable.ic_qs_shortcut_andy);
+        }
+        TextView tv = (TextView) mTile.findViewById(R.id.tile_textview);
+
+        if (shortCutType > 0) {
+            ImageView iv = (ImageView) mTile.findViewById(R.id.tile_imageview);
+            ImageView overlay = (ImageView) mTile.findViewById(R.id.tile_overlay);
             if (shortCutType == 1) {
                 overlay.setImageDrawable(mResources.getDrawable(R.drawable.ic_qs_shortcut_sms));
                 overlay.setVisibility(View.VISIBLE);
@@ -158,24 +167,15 @@ public class CustomShortcutTile extends QuickSettingsTile
                 overlay.setImageDrawable(mResources.getDrawable(R.drawable.ic_qs_shortcut_phone));
                 overlay.setVisibility(View.VISIBLE);
             }
+            iv.setImageDrawable(mAvatar);
+        } else {
+            tv.setCompoundDrawablesWithIntrinsicBounds(null,
+                resize(mAvatar, mIconDimens, mIconDimens), null, null);
         }
-
-        TextView tv = (TextView) mTile.findViewById(R.id.text);
-        if (tv != null) {
-            tv.setText(mName == null || mName.equals("")
-                ? mResources.getString(R.string.qs_shortcut_long_press) : mName);
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
-            if (shortCutType == 0) {
-                tv.setPadding(0, mTileTextPadding, 0, 0);
-            }
-            if (mTileTextColor != -2) {
-                tv.setTextColor(mTileTextColor);
-            }
-        }
-
-        ImageView image = (ImageView) mTile.findViewById(R.id.image);
-        if (image != null) {
-            image.setImageDrawable(mAvatar);
+        tv.setText(name == null || name.equals("") ? mResources.getString(R.string.qs_shortcut_long_press) : name);
+        tv.setTextSize(1, mTileTextSize);
+        if (mTileTextColor != -2) {
+            tv.setTextColor(mTileTextColor);
         }
     }
 
@@ -184,7 +184,7 @@ public class CustomShortcutTile extends QuickSettingsTile
         if (shortCutType) {
             mTileLayout = R.layout.quick_settings_tile_customshortcut;
         } else {
-            mTileLayout = R.layout.quick_settings_tile_basic;
+            mTileLayout = R.layout.quick_settings_tile_generic;
         }
         mTile.setContent(mTileLayout, mInflater);
     }
@@ -192,6 +192,7 @@ public class CustomShortcutTile extends QuickSettingsTile
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(tileID)) {
+            setLabelAndIcon();
             updateQuickSettings();
             mQsc.updateTilesContent();
         }
@@ -205,6 +206,12 @@ public class CustomShortcutTile extends QuickSettingsTile
         } else {
             return Resources.getSystem().getDrawable(mIconResourceId);
         }
+    }
+
+    private Drawable resize(Drawable image, int width, int height) {
+        Bitmap d = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapOrig = Bitmap.createScaledBitmap(d, width, height, false);
+        return new BitmapDrawable(bitmapOrig);
     }
 
 }
