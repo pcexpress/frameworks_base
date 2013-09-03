@@ -4004,6 +4004,18 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_DISABLE_HINTS = "lockscreen_disable_hints";
 
+	 /* StatusBar Network speed indicator
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
+        
+        /**
+         * StatusBar Network speed indicator color
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC_COLOR = "status_bar_traffic_color";
+
+
         /**
          * @hide
          */
