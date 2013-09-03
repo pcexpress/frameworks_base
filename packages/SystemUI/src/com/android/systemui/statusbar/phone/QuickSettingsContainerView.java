@@ -44,14 +44,11 @@ public class QuickSettingsContainerView extends FrameLayout {
     private float mCellGap;
 
     private Context mContext;
-    private Resources mResources;
 
     public QuickSettingsContainerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mContext = context;
-        mResources = getContext().getResources();
-
         updateResources();
     }
 
@@ -63,15 +60,13 @@ public class QuickSettingsContainerView extends FrameLayout {
         LayoutTransition transitions = getLayoutTransition();
     }
 
-    public void updateResources() {
-        mCellGap = mResources.getDimension(R.dimen.quick_settings_cell_gap);
+    void updateResources() {
+        Resources r = getContext().getResources();
+        mCellGap = r.getDimension(R.dimen.quick_settings_cell_gap);
         mNumColumns = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUICK_TILES_PER_ROW, 3);
-        // do not allow duplication on tablets or any device which do not have
-        // flipsettings
+                Settings.System.QUICK_TILES_PER_ROW, r.getInteger(R.integer.quick_settings_num_columns));
         mDuplicateColumnsLandscape = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QUICK_TILES_PER_ROW_DUPLICATE_LANDSCAPE, 1) == 1
-                        && mResources.getBoolean(R.bool.config_hasFlipSettingsPanel);
+                Settings.System.QUICK_TILES_PER_ROW_DUPLICATE_LANDSCAPE, 1) == 1;
         requestLayout();
     }
 
@@ -176,34 +171,29 @@ public class QuickSettingsContainerView extends FrameLayout {
         return isLandscape;
     }
 
-    public int getTileTextSize() {
-        // get tile text size based on column count
-        switch (mNumColumns) {
+    public int updateTileTextSize() {
+        int tileTextSize;
+        int numColumns = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QUICK_TILES_PER_ROW,
+                getContext().getResources().getInteger(R.integer.quick_settings_num_columns));
+
+        // adjust Tile Text Size based on column count
+        switch (numColumns) {
             case 5:
-                return mResources.getDimensionPixelSize(R.dimen.qs_5_column_text_size);
+                tileTextSize = 7;
+                break;
             case 4:
-                return mResources.getDimensionPixelSize(R.dimen.qs_4_column_text_size);
+                tileTextSize = 10;
+                break;
             case 3:
             default:
-                return mResources.getDimensionPixelSize(R.dimen.qs_3_column_text_size);
+                tileTextSize = 12;
+                break;
         }
+        return tileTextSize;
     }
 
-
-    public int getTileTextPadding() {
-        // get tile text padding based on column count
-        switch (mNumColumns) {
-            case 5:
-                return mResources.getDimensionPixelSize(R.dimen.qs_5_column_text_padding);
-            case 4:
-                return mResources.getDimensionPixelSize(R.dimen.qs_4_column_text_padding);
-            case 3:
-            default:
-                return mResources.getDimensionPixelSize(R.dimen.qs_tile_margin_below_icon);
-        }
-    }
-
-    public int getTileTextColor() {
+    public int updateTileTextColor() {
         int tileTextColor = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.QUICK_TILES_TEXT_COLOR, -2);
 

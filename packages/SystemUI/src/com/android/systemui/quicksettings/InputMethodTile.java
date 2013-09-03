@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2012 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.android.systemui.quicksettings;
 
@@ -26,12 +26,14 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.systemui.R;
@@ -61,15 +63,16 @@ public class InputMethodTile extends QuickSettingsTile {
 
             @Override
             public void onClick(View v) {
+
+		if (isEnabled()) {
+                    flipTile(0);
+                } 
                 try {
                     mQsc.mBar.collapseAllPanels(true);
                     Intent intent = new Intent(Settings.ACTION_SHOW_INPUT_METHOD_PICKER);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 0, intent, 0);
                     pendingIntent.send();
                 } catch (Exception e) {}
- if (isEnabled()) {
-                    flipTile(0);
-                } 
             }
         };
 
@@ -151,13 +154,19 @@ public class InputMethodTile extends QuickSettingsTile {
 
     @Override
     void updateQuickSettings() {
-        TextView tv = (TextView) mTile.findViewById(R.id.tile_textview);
-        tv.setText(mLabel);
-        tv.setTextSize(1, mTileTextSize);
-        if (mTileTextColor != -2) {
-            tv.setTextColor(mTileTextColor);
+        TextView tv = (TextView) mTile.findViewById(R.id.text);
+        if (tv != null) {
+                tv.setText(mLabel);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
+            tv.setPadding(0, mTileTextPadding, 0, 0);
+            if (mTileTextColor != -2) {
+                tv.setTextColor(mTileTextColor);
+            }
         }
-        tv.setCompoundDrawablesWithIntrinsicBounds(0, mDrawable, 0, 0);
+        ImageView image = (ImageView) mTile.findViewById(R.id.image);
+        if (image != null) {
+            image.setImageResource(mDrawable);
+        }
         mTile.setVisibility(showTile ? View.VISIBLE : View.GONE);
         super.updateQuickSettings();
     }
