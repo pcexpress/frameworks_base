@@ -292,7 +292,7 @@ public static CameraTile mInstance;
         super.onPostCreate();
     }
 
-    @Override
+   
     public void onClick(View v) {
 
 if (isEnabled()) {
