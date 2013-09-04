@@ -44,6 +44,7 @@ public class QuickSettingsContainerView extends FrameLayout {
     private float mCellGap;
 
     private Context mContext;
+     private Resources mResources;
 
     public QuickSettingsContainerView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -198,6 +199,19 @@ public class QuickSettingsContainerView extends FrameLayout {
                 Settings.System.QUICK_TILES_TEXT_COLOR, -2);
 
         return tileTextColor;
+    }
+
+   public int getTileTextSize() {
+        // get tile text size based on column count
+        switch (mNumColumns) {
+            case 5:
+                return mResources.getDimensionPixelSize(R.dimen.qs_5_column_text_size);
+            case 4:
+                return mResources.getDimensionPixelSize(R.dimen.qs_4_column_text_size);
+            case 3:
+            default:
+                return mResources.getDimensionPixelSize(R.dimen.qs_3_column_text_size);
+        }
     }
 
  public int getTileTextPadding() {
