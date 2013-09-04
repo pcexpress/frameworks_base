@@ -9,4 +9,5 @@
         android:valueFrom="-90"
         android:valueTo="0"
         android:propertyName="rotationY" />
+
 </set>
