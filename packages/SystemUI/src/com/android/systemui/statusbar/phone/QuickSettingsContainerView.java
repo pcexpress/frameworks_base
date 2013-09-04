@@ -60,7 +60,7 @@ public class QuickSettingsContainerView extends FrameLayout {
         LayoutTransition transitions = getLayoutTransition();
     }
 
-    void updateResources() {
+    public void updateResources() {
         Resources r = getContext().getResources();
         mCellGap = r.getDimension(R.dimen.quick_settings_cell_gap);
         mNumColumns = Settings.System.getInt(mContext.getContentResolver(),
@@ -194,6 +194,26 @@ public class QuickSettingsContainerView extends FrameLayout {
     }
 
     public int updateTileTextColor() {
+        int tileTextColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QUICK_TILES_TEXT_COLOR, -2);
+
+        return tileTextColor;
+    }
+
+ public int getTileTextPadding() {
+        // get tile text padding based on column count
+        switch (mNumColumns) {
+            case 5:
+                return mResources.getDimensionPixelSize(R.dimen.qs_5_column_text_padding);
+            case 4:
+                return mResources.getDimensionPixelSize(R.dimen.qs_4_column_text_padding);
+            case 3:
+            default:
+                return mResources.getDimensionPixelSize(R.dimen.qs_tile_margin_below_icon);
+        }
+    }
+
+ public int getTileTextColor() {
         int tileTextColor = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.QUICK_TILES_TEXT_COLOR, -2);
 
