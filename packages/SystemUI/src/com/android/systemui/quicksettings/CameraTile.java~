@@ -292,12 +292,10 @@ public static CameraTile mInstance;
         super.onPostCreate();
     }
 
-     mOnClick = new View.OnClickListener() {
-    
-    @Override
+   
     public void onClick(View v) {
 
-    if (isEnabled()) {
+if (isEnabled()) {
                     flipTile(0);
                 } 
         if (mCamera == null) {
@@ -305,8 +303,7 @@ public static CameraTile mInstance;
         } else {
             mHandler.post(mTakePictureRunnable);
         }
-        }
-    };
+    }
 
     private PanelView getContainingPanel() {
         ViewParent parent = mContainerView;
