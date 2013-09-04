@@ -187,7 +187,7 @@ public class VibratorService extends IVibratorService.Stub
     
     void updateVibrationMultiplier()
 		    {
-        vibrationMultiplier = Settings.Secure.getFloat(
+        vibrationMultiplier = Settings.System.getFloat(
                             mContext.getContentResolver(),
                             Settings.System.VIBRATION_MULTIPLIER, 1);
 		    } 
