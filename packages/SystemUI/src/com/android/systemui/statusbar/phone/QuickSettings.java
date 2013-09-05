@@ -481,7 +481,7 @@ class QuickSettings {
 
                         {  
 
-                                String raw = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.LOCK_CLOCK_CACHED_WEATHER);
+                                String raw = Settings.Secure.getString(mContext.getContentResolver(), Settings.System.LOCK_CLOCK_CACHED_WEATHER);
 
                                 String link = raw.split("\\|")[13];
 

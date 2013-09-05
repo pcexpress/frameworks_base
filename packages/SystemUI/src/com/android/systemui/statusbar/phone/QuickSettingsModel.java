@@ -363,7 +363,7 @@ private QuickSettingsTileView mWeatherTile;
 
         String raw = Settings.Secure.getString(mContext.getContentResolver(),
 
-                Settings.Secure.LOCK_CLOCK_CACHED_WEATHER);
+                Settings.System.LOCK_CLOCK_CACHED_WEATHER);
 
         
 
