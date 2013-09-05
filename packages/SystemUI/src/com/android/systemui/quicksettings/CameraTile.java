@@ -290,9 +290,6 @@ public static CameraTile mInstance;
     		@Override
    		 public void onClick(View v) {
 
-    		if (isEnabled()) {
-                    flipTile(0);
-                } 
         	if (mCamera == null) {
             mHandler.post(mStartRunnable);
         	} else {
