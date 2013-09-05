@@ -70,13 +70,13 @@ public class WeatherTile extends QuickSettingsTile{
 
  @Override
     void onPostCreate() {
-        refreshWeatherTile()
+        refreshWeatherTile();
         super.onPostCreate();
     }
 
 @Override
     void onResume() {
-        refreshWeatherTile()
+        refreshWeatherTile();
         super.onPostCreate();
     }
 
