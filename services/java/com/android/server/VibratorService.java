@@ -166,7 +166,7 @@ public class VibratorService extends IVibratorService.Stub
                 }, UserHandle.USER_ALL);
                 
                  mContext.getContentResolver().registerContentObserver(
-               Settings.Secure.getUriFor(Settings.System.VIBRATION_MULTIPLIER), true,
+               Settings.System.getUriFor(Settings.System.VIBRATION_MULTIPLIER), true,
                 new ContentObserver(mH) {
                     @Override
                     public void onChange(boolean selfChange) {
