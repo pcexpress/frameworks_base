@@ -347,6 +347,7 @@ private QuickSettingsTileView mWeatherTile;
         refreshBluetoothTile();
         refreshBrightnessTile();
         refreshRotationLockTile();
+	refreshWeatherTile();
     }
 
  void addWeatherTile(QuickSettingsTileView view, RefreshCallback cb) {
@@ -361,7 +362,7 @@ private QuickSettingsTileView mWeatherTile;
 
     void onWeatherChanged() {
 
-        String raw = Settings.Secure.getString(mContext.getContentResolver(),
+        String raw = Settings.System.getString(mContext.getContentResolver(),
 
                 Settings.System.LOCK_CLOCK_CACHED_WEATHER);
 

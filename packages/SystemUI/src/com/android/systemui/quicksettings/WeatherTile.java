@@ -31,7 +31,6 @@ import android.view.View.OnLongClickListener;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
-import com.android.systemui.statusbar.phone.QuickSettingsModel;
 import android.content.BroadcastReceiver;
 
 public class WeatherTile extends QuickSettingsTile{
@@ -67,17 +66,4 @@ public class WeatherTile extends QuickSettingsTile{
             }
         };
     }
-
- @Override
-    void onPostCreate() {
-        refreshWeatherTile();
-        super.onPostCreate();
-    }
-
-@Override
-    void onResume() {
-        refreshWeatherTile();
-        super.onPostCreate();
-    }
-
 }
