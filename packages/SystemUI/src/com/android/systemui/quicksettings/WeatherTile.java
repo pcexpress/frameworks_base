@@ -31,6 +31,7 @@ import android.view.View.OnLongClickListener;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
+import com.android.systemui.statusbar.phone.QuickSettingsModel;
 import android.content.BroadcastReceiver;
 
 public class WeatherTile extends QuickSettingsTile{
@@ -47,7 +48,7 @@ public class WeatherTile extends QuickSettingsTile{
             QuickSettingsContainerView container, QuickSettingsController qsc) {
         super(context, inflater, container, qsc);
         mTileLayout = R.layout.quick_settings_tile_weather;
-
+ mDrawable = R.drawable.weather_na;
         mOnClick = new View.OnClickListener() {
 
             @Override
@@ -67,5 +68,16 @@ public class WeatherTile extends QuickSettingsTile{
         };
     }
 
+ @Override
+    void onPostCreate() {
+        refreshWeatherTile()
+        super.onPostCreate();
+    }
+
+@Override
+    void onResume() {
+        refreshWeatherTile()
+        super.onPostCreate();
+    }
 
 }

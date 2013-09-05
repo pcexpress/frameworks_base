@@ -40,6 +40,7 @@ import android.view.LayoutInflater;
 import com.android.systemui.quicksettings.QuickSettingsTile;
 import com.android.systemui.quicksettings.InputMethodTile;
 import com.android.systemui.quicksettings.CameraTile;
+import com.android.systemui.quicksettings.WeatherTile;
 
 import dalvik.system.DexClassLoader;
 import android.content.SharedPreferences;
