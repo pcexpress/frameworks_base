@@ -70,6 +70,7 @@ import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.net.Uri;
 
 import java.util.ArrayList;
 
@@ -463,7 +464,7 @@ class QuickSettings {
 
 // Weather
 
-  quick = (QuickSettingsTileView)
+   QuickSettingsTileView quick = (QuickSettingsTileView)
 
                         inflater.inflate(R.layout.quick_settings_tile, parent, false);
                 quick.setContent(R.layout.quick_settings_tile_weather, inflater);
@@ -534,7 +535,7 @@ class QuickSettings {
 
                         tv.setText(state.label);
 
-                        tv.setTextSize(1, mTileTextSize);
+                        tv.setTextSize(1, 12);
 
                         tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
 

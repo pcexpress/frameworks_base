@@ -219,7 +219,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
 
             cr.registerContentObserver(
 
-                    Settings.Secure.getUriFor(Settings.Secure.LOCK_CLOCK_CACHED_WEATHER),
+                    Settings.System.getUriFor(Settings.System.LOCK_CLOCK_CACHED_WEATHER),
 
                     false, this);
 
