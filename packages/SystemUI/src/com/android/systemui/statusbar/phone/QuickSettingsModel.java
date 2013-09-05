@@ -191,12 +191,54 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         }
     }
 
+ private class WeatherObserver extends ContentObserver {
+
+        public WeatherObserver(Handler handler) {
+
+            super(handler);
+
+        }
+
+
+
+        @Override
+
+        public void onChange(boolean selfChange) {
+
+            onWeatherChanged();
+
+        }
+
+ 
+
+        public void startObserving() {
+
+            final ContentResolver cr = mContext.getContentResolver();
+
+            cr.unregisterContentObserver(this);
+
+            cr.registerContentObserver(
+
+                    Settings.Secure.getUriFor(Settings.Secure.LOCK_CLOCK_CACHED_WEATHER),
+
+                    false, this);
+
+                    
+
+            onChange(false);
+
+        }
+
+    }
+
+
     private final Context mContext;
     private final Handler mHandler;
     private final CurrentUserTracker mUserTracker;
     private final NextAlarmObserver mNextAlarmObserver;
     private final BugreportObserver mBugreportObserver;
     private final BrightnessObserver mBrightnessObserver;
+private final WeatherObserver mWeatherObserver;
 
     private final boolean mHasMobileData;
 
@@ -260,6 +302,12 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private RefreshCallback mSettingsCallback;
     private State mSettingsState = new State();
 
+private QuickSettingsTileView mWeatherTile;
+
+    private RefreshCallback mWeatherCallback;
+    private State mWeatherState = new State();
+
+
     public QuickSettingsModel(Context context) {
         mContext = context;
         mHandler = new Handler();
@@ -279,6 +327,10 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         mBugreportObserver.startObserving();
         mBrightnessObserver = new BrightnessObserver(mHandler);
         mBrightnessObserver.startObserving();
+ mWeatherObserver = new WeatherObserver(mHandler);
+        mWeatherObserver.startObserving();
+
+
 
         ConnectivityManager cm = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -296,6 +348,69 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         refreshBrightnessTile();
         refreshRotationLockTile();
     }
+
+ void addWeatherTile(QuickSettingsTileView view, RefreshCallback cb) {
+
+        mWeatherTile = view;
+
+        mWeatherCallback = cb;
+
+        mWeatherCallback.refreshView(mWeatherTile, mWeatherState);
+
+    }
+
+    void onWeatherChanged() {
+
+        String raw = Settings.Secure.getString(mContext.getContentResolver(),
+
+                Settings.Secure.LOCK_CLOCK_CACHED_WEATHER);
+
+        
+
+        mWeatherState.label = "N/A";
+
+        mWeatherState.iconId = R.drawable.weather_na;
+
+            
+
+        if (raw != null)
+
+        {
+
+        String[] split = raw.split("\\|");
+
+        if (split.length > 3)
+
+        {
+
+        int code = Integer.parseInt(split[3]);
+
+        mWeatherState.label = split[0];
+
+        int resId = mContext.getResources().getIdentifier("weather_" + code, "drawable", mContext.getPackageName());
+
+        mWeatherState.iconId = resId;
+
+        }
+
+        }
+
+        
+
+        refreshWeatherTile();
+
+    }
+
+    
+
+    void refreshWeatherTile() {
+
+        if (mWeatherCallback != null)
+
+            mWeatherCallback.refreshView(mWeatherTile, mWeatherState);
+
+    }
+
 
     // Settings
     void addSettingsTile(QuickSettingsTileView view, RefreshCallback cb) {

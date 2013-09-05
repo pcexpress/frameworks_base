@@ -461,6 +461,88 @@ class QuickSettings {
             parent.addView(rotationLockTile);
         }
 
+// Weather
+
+  quick = (QuickSettingsTileView)
+
+                        inflater.inflate(R.layout.quick_settings_tile, parent, false);
+                quick.setContent(R.layout.quick_settings_tile_weather, inflater);
+
+
+
+                quick.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+
+                    public void onClick(View v) {
+
+                        try
+
+                        {  
+
+                                String raw = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.LOCK_CLOCK_CACHED_WEATHER);
+
+                                String link = raw.split("\\|")[13];
+
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+
+                                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                mContext.startActivity(browserIntent);
+
+                                mBar.collapseAllPanels(true);
+
+                        } catch (Exception e) {
+
+                        
+
+                        }
+
+                    }
+
+                });
+
+                quick.setOnLongClickListener(new View.OnLongClickListener() {
+
+                    @Override
+
+                    public boolean onLongClick(View v) {
+
+                        Intent i = new Intent(Intent.ACTION_MAIN);
+
+                        i.setComponent(new ComponentName("com.cyanogenmod.lockclock","com.cyanogenmod.lockclock.preference.Preferences"));
+
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        mContext.startActivity(i);
+
+                        mBar.collapseAllPanels(true);
+
+                        return true;
+
+                    }
+
+                });
+
+                mModel.addWeatherTile(quick, new QuickSettingsModel.RefreshCallback() {
+
+                    @Override
+
+                    public void refreshView(QuickSettingsTileView view, State state) {
+
+                        TextView tv = (TextView) view.findViewById(R.id.weather_textview);
+
+                        tv.setText(state.label);
+
+                        tv.setTextSize(1, mTileTextSize);
+
+                        tv.setCompoundDrawablesWithIntrinsicBounds(0, state.iconId, 0, 0);
+
+                    }
+
+                });
+
+
         // Battery
         final QuickSettingsBasicTile batteryTile = new QuickSettingsBasicTile(mContext);
         batteryTile.setOnClickListener(new View.OnClickListener() {

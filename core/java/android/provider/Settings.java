@@ -2814,6 +2814,9 @@ public final class Settings {
          * Pie button press color
          * @hide
          */
+
+	public static final String LOCK_CLOCK_CACHED_WEATHER = "clock_cached_weather";
+
         public static final String PIE_BUTTON_PRESSED_COLOR = "pie_button_pressed_color";
 
 	/**
