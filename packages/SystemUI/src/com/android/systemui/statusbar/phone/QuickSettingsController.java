@@ -40,7 +40,7 @@ import android.view.LayoutInflater;
 import com.android.systemui.quicksettings.QuickSettingsTile;
 import com.android.systemui.quicksettings.InputMethodTile;
 import com.android.systemui.quicksettings.CameraTile;
-import com.android.systemui.quicksettings.WeatherTile;
+
 
 import dalvik.system.DexClassLoader;
 import android.content.SharedPreferences;
@@ -100,8 +100,7 @@ public class QuickSettingsController {
     public static final String TILE_WIFI = "toggleWifi";
     public static final String TILE_WIFIAP = "toggleWifiAp";
     public static final String TILE_WIFIDISPLAY = "toggleWifiDisplay";
-	public static final String WEATHER_TOGGLE = "WEATHER";
-
+	
     // not yet supported
     public static final String TILE_WIMAX = "toggleWimax";
 
@@ -143,8 +142,7 @@ public class QuickSettingsController {
         TILES_CLASSES.put(TILE_WIFI, "com.android.systemui.quicksettings.WiFiTile");
         TILES_CLASSES.put(TILE_WIFIAP, "com.android.systemui.quicksettings.WifiAPTile");
         TILES_CLASSES.put(TILE_WIFIDISPLAY, "com.android.systemui.quicksettings.WiFiDisplayTile");
-	TILES_CLASSES.put(WEATHER_TOGGLE, "com.android.systemui.quicksettings.WeatherTile");
-    }
+	}
 
     private static final String TILE_DELIMITER = "|";
     private static final String TILES_DEFAULT = TILE_USER
