@@ -82,6 +82,8 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.view.animation.AnimationUtils;
 
+import java.lang.NullPointerException;
+
 /**
  * Base class that can be used to implement virtualized lists of items. A list does
  * not have a spatial definition here. For instance, subclases of this class can
@@ -675,6 +677,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
      */
     boolean mIsAttached;
 
+    
+
+
     /**
      * Track the item count from the last time we handled a data change.
      */
@@ -702,7 +707,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     int mvPosition;
     boolean mIsTap = false;
     boolean mIsGridView = false;
-	
     /**
      * Interface definition for a callback to be invoked when the list or grid
      * has been scrolled.
@@ -767,11 +771,11 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
          */
         public void adjustListItemSelectionBounds(Rect bounds);
     }
-
+    
     public AbsListView(Context context) {
         super(context);
         initAbsListView();
-
+        
         setVerticalScrollBarEnabled(true);
         TypedArray a = context.obtainStyledAttributes(R.styleable.View);
         initializeScrollbars(a);
@@ -843,7 +847,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
         mDensityScale = getContext().getResources().getDisplayMetrics().density;
 
-        setPersistentDrawingCache(ViewGroup.PERSISTENT_ANIMATION_CACHE|ViewGroup.PERSISTENT_SCROLLING_CACHE);
+
+        setPersistentDrawingCache(ViewGroup.PERSISTENT_ANIMATION_CACHE|ViewGroup.PERSISTENT_SCROLLING_CACHE); ;
+
 
     }
 
@@ -1071,6 +1077,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     public boolean performItemClick(View view, int position, long id) {
         boolean handled = false;
         boolean dispatchItemClick = true;
+
         if (mChoiceMode != CHOICE_MODE_NONE) {
             handled = true;
             boolean checkedStateChanged = false;
@@ -1396,11 +1403,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         if (isEnabled()) {
             if (getFirstVisiblePosition() > 0) {
                 info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-                info.setScrollable(true);
             }
             if (getLastVisiblePosition() < getCount() - 1) {
                 info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                info.setScrollable(true);
             }
         }
     }
@@ -1427,22 +1432,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             } return false;
         }
         return false;
-    }
-
-    /** @hide */
-    @Override
-    public View findViewByAccessibilityIdTraversal(int accessibilityId) {
-        if (accessibilityId == getAccessibilityViewId()) {
-            return this;
-        }
-        // If the data changed the children are invalid since the data model changed.
-        // Hence, we pretend they do not exist. After a layout the children will sync
-        // with the model at which point we notify that the accessibility state changed,
-        // so a service will be able to re-fetch the views.
-        if (mDataChanged) {
-            return null;
-        }
-        return super.findViewByAccessibilityIdTraversal(accessibilityId);
     }
 
     /**
@@ -2018,6 +2007,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+
         mInLayout = true;
         if (changed) {
             int childCount = getChildCount();
@@ -2236,7 +2226,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
         }
 
-        return child;
+	 return child;
     }
 
     View setAnimation(View view) {
@@ -2245,6 +2235,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         boolean mDown = false;
 
         try {
+
             scrollY = computeVerticalScrollOffset();
         } catch (NullPointerException e) {
             scrollY = mvPosition;
@@ -2253,13 +2244,14 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         if(mAnim == 0)
             return view;
 
+
         if(mvPosition < scrollY)
         mDown = true;
         mvPosition = scrollY;
 
         Animation anim = null;
         switch (mAnim) {
-            case 1:
+            case 1:	
                 anim = new ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f);
                 break;
             case 2:
@@ -2290,13 +2282,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     anim = new TranslateAnimation(0.0f, 0.0f, -mHeight, 0.0f);
                 break;
             case 9:
-                anim = new TranslateAnimation(-mWidth, 0.0f, 0.0f, 0.0f);
+                anim = new TranslateAnimation(-mWidth, 0.0f, 0.0f, 0.0f);	
                 break;
             case 10:
-                anim = new TranslateAnimation(mWidth, 0.0f, 0.0f, 0.0f);
+                anim = new TranslateAnimation(mWidth, 0.0f, 0.0f, 0.0f);	
                 break;
             case 11:
-                anim = new RotateAnimation(180, 0.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                anim = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);	
                 break;
         }
         anim.setDuration(500);
@@ -2323,30 +2315,18 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             case 7:
                 anim.setInterpolator(AnimationUtils.loadInterpolator(mContext, android.R.anim.bounce_interpolator));
                 break;
-        }
+        }      
         if (view != null) {
-            view.startAnimation(anim);
+        	view.startAnimation(anim);
         }
         return view;
     }
-
+ 
     public void setGridView(boolean bool){
-        mIsGridView = bool;
+    mIsGridView = bool;
     }
 
     class ListItemAccessibilityDelegate extends AccessibilityDelegate {
-        @Override
-        public AccessibilityNodeInfo createAccessibilityNodeInfo(View host) {
-            // If the data changed the children are invalid since the data model changed.
-            // Hence, we pretend they do not exist. After a layout the children will sync
-            // with the model at which point we notify that the accessibility state changed,
-            // so a service will be able to re-fetch the views.
-            if (mDataChanged) {
-                return null;
-            }
-            return super.createAccessibilityNodeInfo(host);
-        }
-
         @Override
         public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
             super.onInitializeAccessibilityNodeInfo(host, info);
@@ -2757,7 +2737,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             mGlobalLayoutListenerAddedFilter = false;
         }
 
-        if (mAdapter != null && mDataSetObserver != null) {
+        if (mAdapter != null) {
             mAdapter.unregisterDataSetObserver(mDataSetObserver);
             mDataSetObserver = null;
         }
@@ -2848,15 +2828,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
 
         mLastTouchMode = touchMode;
-    }
-
-    @Override
-    public void onRtlPropertiesChanged(int layoutDirection) {
-        super.onRtlPropertiesChanged(layoutDirection);
-
-        if (mFastScroller != null) {
-           mFastScroller.setScrollbarPosition(getVerticalScrollbarPosition());
-        }
     }
 
     /**
@@ -3395,13 +3366,11 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
         }
     }
-
-    final Handler Inverse = new Handler() {
-        public void handleMessage(Message msg) {
+    final Handler Inverse = new Handler(){
+        public void handleMessage(Message msg){
             mIsTap = !mIsTap;
         }
     };
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (!isEnabled()) {
@@ -3595,7 +3564,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                                     if (!mDataChanged) {
                                         performClick.run();
                                     }
-                                    mTouchModeReset = null;
                                 }
                             };
                             postDelayed(mTouchModeReset,
@@ -4052,9 +4020,12 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
      *
      * @param newState The new scroll state.
      */
-    void reportScrollStateChange(int newState) {
+    void reportScrollStateChange(int newState) {        
         if (newState != mLastScrollState) {
-            mIsScrolling = newState != OnScrollListener.SCROLL_STATE_IDLE;
+            if(newState == OnScrollListener.SCROLL_STATE_IDLE) 
+            mIsScrolling = false;
+            else
+            mIsScrolling = true;              
             if (mOnScrollListener != null) {
                 mLastScrollState = newState;
                 mOnScrollListener.onScrollStateChanged(this, newState);
@@ -6340,7 +6311,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         private ArrayList<View> mSkippedScrap;
 
         private SparseArray<View> mTransientStateViews;
-        private LongSparseArray<View> mTransientStateViewsById;
 
         public void setViewTypeCount(int viewTypeCount) {
             if (viewTypeCount < 1) {
@@ -6379,12 +6349,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     mTransientStateViews.valueAt(i).forceLayout();
                 }
             }
-            if (mTransientStateViewsById != null) {
-                final int count = mTransientStateViewsById.size();
-                for (int i = 0; i < count; i++) {
-                    mTransientStateViewsById.valueAt(i).forceLayout();
-                }
-            }
         }
 
         public boolean shouldRecycleViewType(int viewType) {
@@ -6413,9 +6377,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
             if (mTransientStateViews != null) {
                 mTransientStateViews.clear();
-            }
-            if (mTransientStateViewsById != null) {
-                mTransientStateViewsById.clear();
             }
         }
 
@@ -6464,21 +6425,16 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
 
         View getTransientStateView(int position) {
-            if (mAdapter != null && mAdapterHasStableIds && mTransientStateViewsById != null) {
-                long id = mAdapter.getItemId(position);
-                View result = mTransientStateViewsById.get(id);
-                mTransientStateViewsById.remove(id);
-                return result;
+            if (mTransientStateViews == null) {
+                return null;
             }
-            if (mTransientStateViews != null) {
-                final int index = mTransientStateViews.indexOfKey(position);
-                if (index >= 0) {
-                    View result = mTransientStateViews.valueAt(index);
-                    mTransientStateViews.removeAt(index);
-                    return result;
-                }
+            final int index = mTransientStateViews.indexOfKey(position);
+            if (index < 0) {
+                return null;
             }
-            return null;
+            final View result = mTransientStateViews.valueAt(index);
+            mTransientStateViews.removeAt(index);
+            return result;
         }
 
         /**
@@ -6487,9 +6443,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         void clearTransientStateViews() {
             if (mTransientStateViews != null) {
                 mTransientStateViews.clear();
-            }
-            if (mTransientStateViewsById != null) {
-                mTransientStateViewsById.clear();
             }
         }
 
@@ -6526,27 +6479,18 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             int viewType = lp.viewType;
             final boolean scrapHasTransientState = scrap.hasTransientState();
             if (!shouldRecycleViewType(viewType) || scrapHasTransientState) {
-                if (viewType != ITEM_VIEW_TYPE_HEADER_OR_FOOTER && scrapHasTransientState) {
+                if (viewType != ITEM_VIEW_TYPE_HEADER_OR_FOOTER || scrapHasTransientState) {
                     if (mSkippedScrap == null) {
                         mSkippedScrap = new ArrayList<View>();
                     }
                     mSkippedScrap.add(scrap);
                 }
                 if (scrapHasTransientState) {
-                    scrap.dispatchStartTemporaryDetach();
-                    if (mAdapter != null && mAdapterHasStableIds) {
-                        if (mTransientStateViewsById == null) {
-                            mTransientStateViewsById = new LongSparseArray<View>();
-                        }
-                        mTransientStateViewsById.put(lp.itemId, scrap);
-                    } else if (!mDataChanged) {
-                        // avoid putting views on transient state list during a data change;
-                        // the layout positions may be out of sync with the adapter positions
-                        if (mTransientStateViews == null) {
-                            mTransientStateViews = new SparseArray<View>();
-                        }
-                        mTransientStateViews.put(position, scrap);
+                    if (mTransientStateViews == null) {
+                        mTransientStateViews = new SparseArray<View>();
                     }
+                    scrap.dispatchStartTemporaryDetach();
+                    mTransientStateViews.put(position, scrap);
                 }
                 return;
             }
@@ -6600,23 +6544,15 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     final boolean scrapHasTransientState = victim.hasTransientState();
                     if (!shouldRecycleViewType(whichScrap) || scrapHasTransientState) {
                         // Do not move views that should be ignored
-                        if (whichScrap != ITEM_VIEW_TYPE_HEADER_OR_FOOTER &&
+                        if (whichScrap != ITEM_VIEW_TYPE_HEADER_OR_FOOTER ||
                                 scrapHasTransientState) {
                             removeDetachedView(victim, false);
                         }
                         if (scrapHasTransientState) {
-                            if (mAdapter != null && mAdapterHasStableIds) {
-                                if (mTransientStateViewsById == null) {
-                                    mTransientStateViewsById = new LongSparseArray<View>();
-                                }
-                                long id = mAdapter.getItemId(mFirstActivePosition + i);
-                                mTransientStateViewsById.put(id, victim);
-                            } else {
-                                if (mTransientStateViews == null) {
-                                    mTransientStateViews = new SparseArray<View>();
-                                }
-                                mTransientStateViews.put(mFirstActivePosition + i, victim);
+                            if (mTransientStateViews == null) {
+                                mTransientStateViews = new SparseArray<View>();
                             }
+                            mTransientStateViews.put(mFirstActivePosition + i, victim);
                         }
                         continue;
                     }
@@ -6661,15 +6597,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     final View v = mTransientStateViews.valueAt(i);
                     if (!v.hasTransientState()) {
                         mTransientStateViews.removeAt(i);
-                        i--;
-                    }
-                }
-            }
-            if (mTransientStateViewsById != null) {
-                for (int i = 0; i < mTransientStateViewsById.size(); i++) {
-                    final View v = mTransientStateViewsById.valueAt(i);
-                    if (!v.hasTransientState()) {
-                        mTransientStateViewsById.removeAt(i);
                         i--;
                     }
                 }
