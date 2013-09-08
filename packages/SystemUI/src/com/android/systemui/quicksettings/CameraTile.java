@@ -284,20 +284,6 @@ public static CameraTile mInstance;
             // Use default
         }
         mImageNameFormatter = new SimpleDateFormat(imageFileNameFormat);
-
-	mOnClick = new View.OnClickListener() {
-    
-    		@Override
-   		 public void onClick(View v) {
-
-        	if (mCamera == null) {
-            mHandler.post(mStartRunnable);
-        	} else {
-            mHandler.post(mTakePictureRunnable);
-        	}
-        }
-    };
-
  }
 
     @Override
@@ -322,6 +308,18 @@ public static CameraTile mInstance;
         super.onPostCreate();
     }
 
+ @Override
+    public void onClick(View v) {
+
+if (isEnabled()) {
+                    flipTile(0);
+                } 
+        if (mCamera == null) {
+            mHandler.post(mStartRunnable);
+        } else {
+            mHandler.post(mTakePictureRunnable);
+        }
+    }
      
     private PanelView getContainingPanel() {
         ViewParent parent = mContainerView;
