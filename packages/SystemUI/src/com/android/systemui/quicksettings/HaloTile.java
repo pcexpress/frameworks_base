@@ -47,13 +47,15 @@ public int mHaloEnabled;
 	
     }
 
+    private Context mContext;
+
     public HaloTile(Context context, LayoutInflater inflater,
             QuickSettingsContainerView container,
             QuickSettingsController qsc, Handler handler) {
         super(context, inflater, container, qsc);
  
-	
-	mHaloEnabled = Settings.System.getInt(getApplication().getContext().getContentResolver(),
+	mContext = context;
+	mHaloEnabled = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.HALO_ENABLED);
 
         mDrawable = R.drawable.ic_qs_alarm_on;
@@ -65,7 +67,7 @@ public int mHaloEnabled;
 		if (mHaloEnabled == 0) mHaloEnabled =1;
 		else mHaloEnabled = 0;
 		
-		Settings.System.putInt(getApplication().getContext().getContentResolver(),
+		Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.HALO_ENABLED, mHaloEnabled);		
                 
  if (isEnabled()) {
