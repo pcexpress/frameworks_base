@@ -63,12 +63,8 @@ public int mHaloEnabled;
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-	
-		if (mHaloEnabled == 0) mHaloEnabled =1;
-		else mHaloEnabled = 0;
 		
-		Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.HALO_ENABLED, mHaloEnabled);		
+		updateHalo();		
                 
  if (isEnabled()) {
                     flipTile(0);
@@ -77,4 +73,13 @@ public int mHaloEnabled;
         };
        
     }
+
+  public void updateHalo() {
+
+	if (mHaloEnabled == 0) mHaloEnabled =1;
+		else mHaloEnabled = 0;
+		
+		Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.HALO_ENABLED, mHaloEnabled);
+	}
 }
