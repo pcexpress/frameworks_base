@@ -61,7 +61,7 @@ public class PreferencesTile extends QuickSettingsTile{
                 Intent intent = new Intent();
                 intent.setComponent(new ComponentName(
                         "com.android.settings",
-                        "com.android.settings.HaloOptions"));
+                        "com.android.settings.Settings$QuickSettingsTilesActivity"));
                 startSettingsActivity(intent);
                 return true;
             }
