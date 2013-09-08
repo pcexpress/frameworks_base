@@ -165,19 +165,19 @@ public class QuickSettingsTile implements OnClickListener {
         mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
         mStatusbarService.animateCollapsePanels();
     }
-
-    @Override
-    public final void onClick(View v) {
+ @Override
+    public void onClick(View v) {
+ if (mOnClick != null) {
         mOnClick.onClick(v);
         ContentResolver resolver = mContext.getContentResolver();
         boolean shouldCollapse = Settings.System.getInt(resolver, Settings.System.QS_COLLAPSE_PANEL, 0) == 1;
         if (shouldCollapse) {
             mQsc.mBar.collapseAllPanels(true);
         }
-        if (isEnabled()) {
+if (isEnabled()) {
             doFlip();
         } 
-    }
+    }}
 
     public String getTileContent() {
         return name;
