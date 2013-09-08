@@ -34,6 +34,8 @@ import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 
 public class HaloTile extends QuickSettingsTile{
 
+public int mHaloEnabled;
+
     public static QuickSettingsTile mInstance;
 
     public static QuickSettingsTile getInstance(Context context, LayoutInflater inflater,
@@ -48,7 +50,6 @@ public class HaloTile extends QuickSettingsTile{
             QuickSettingsController qsc, Handler handler) {
         super(context, inflater, container, qsc);
  
-	int mHaloEnabled;
 	mHaloEnabled = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.HALO_ENABLED);
 
