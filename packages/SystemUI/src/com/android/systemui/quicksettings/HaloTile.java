@@ -80,6 +80,6 @@ public int mHaloEnabled;
 		else mHaloEnabled = 0;
 		
 		Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.HALO_ENABLED, mHaloEnabled);
+                    Settings.System.HALO_ENABLED, mHaloEnabled ? 1 : 0);
 	}
 }
