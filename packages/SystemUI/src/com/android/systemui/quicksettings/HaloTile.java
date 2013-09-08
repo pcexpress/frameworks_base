@@ -63,7 +63,7 @@ public int mHaloEnabled;
 		else mHaloEnabled = 0;
 		
 		Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.HALO_ENABLED);		
+                    Settings.System.HALO_ENABLED, mHaloEnabled);		
                 
  if (isEnabled()) {
                     flipTile(0);
