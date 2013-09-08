@@ -35,7 +35,7 @@ import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 public class HaloTile extends QuickSettingsTile{
 
 public int mHaloEnabled;
-private Context mContext;
+
 
     public static QuickSettingsTile mInstance;
 
@@ -44,7 +44,7 @@ private Context mContext;
         mInstance = null;
         mInstance = new HaloTile(context, inflater, container, qsc, handler);
         return mInstance;
-	mContext = context;
+	
     }
 
     public HaloTile(Context context, LayoutInflater inflater,
@@ -53,7 +53,7 @@ private Context mContext;
         super(context, inflater, container, qsc);
  
 	
-	mHaloEnabled = Settings.System.getInt(mContext.getContentResolver(),
+	mHaloEnabled = Settings.System.getInt(getApplication().getContext().getContentResolver(),
                     Settings.System.HALO_ENABLED);
 
         mDrawable = R.drawable.ic_qs_alarm_on;
@@ -65,7 +65,7 @@ private Context mContext;
 		if (mHaloEnabled == 0) mHaloEnabled =1;
 		else mHaloEnabled = 0;
 		
-		Settings.System.putInt(mContext.getContentResolver(),
+		Settings.System.putInt(getApplication().getContext().getContentResolver(),
                     Settings.System.HALO_ENABLED, mHaloEnabled);		
                 
  if (isEnabled()) {
