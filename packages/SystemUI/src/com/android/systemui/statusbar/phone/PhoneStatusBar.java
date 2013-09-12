@@ -3305,10 +3305,12 @@ if (mHaloButtonAnim != null) mHaloButtonAnim.cancel();
                 updateSwapXY();
                 updateShowSearchHoldoff();
 
-                try {
+                removeSidebarView();
+                addSidebarView();
+            
+		try {
                     // position app sidebar on left if in landscape orientation and device has a navbar
                     if (mWindowManagerService.hasNavigationBar() &&
-                                NavbarEditor.isDevicePhone(mContext) &&
                                 config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         mWindowManager.updateViewLayout(mAppSidebar,
                                     getAppSidebarLayoutParams(AppSidebar.SIDEBAR_POSITION_LEFT));
