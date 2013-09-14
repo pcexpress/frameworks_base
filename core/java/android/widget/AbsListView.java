@@ -2354,6 +2354,10 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         return view;
     }
 
+ public void setGridView(boolean bool){
+        mIsGridView = bool;
+    }
+
     class ListItemAccessibilityDelegate extends AccessibilityDelegate {
         @Override
         public AccessibilityNodeInfo createAccessibilityNodeInfo(View host) {
