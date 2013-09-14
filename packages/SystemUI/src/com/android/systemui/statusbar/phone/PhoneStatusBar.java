@@ -1291,7 +1291,7 @@ if (mHaloActive) mTickerView.setVisibility(View.GONE);
                 + " icon=" + icon);
 
         Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (customColor=1) {
+        if (customColor==1) {
             iconDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         } else {
             iconDrawable.clearColorFilter();
@@ -1310,7 +1310,7 @@ if (mHaloActive) mTickerView.setVisibility(View.GONE);
                 + " old=" + old + " icon=" + icon);
 
         Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (customColor=1) {
+        if (customColor==1) {
             iconDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         } else {
             iconDrawable.clearColorFilter();

@@ -192,7 +192,7 @@ public class BatteryController extends BroadcastReceiver {
             for (int i=0; i<N; i++) {
                 ImageView v = mIconViews.get(i);
                 Drawable batteryBitmap = mContext.getResources().getDrawable(icon);
-                if (customColor=1) {
+                if (customColor==1) {
                     batteryBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
                 } else {
                     batteryBitmap.clearColorFilter();
