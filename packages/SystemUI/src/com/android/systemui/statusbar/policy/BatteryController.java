@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2010 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.android.systemui.statusbar.policy;
 
@@ -26,12 +26,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.PorterDuff;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.CharacterStyle;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.provider.Settings;
@@ -51,39 +45,35 @@ public class BatteryController extends BroadcastReceiver {
     private ArrayList<ImageView> mIconViews = new ArrayList<ImageView>();
     private ArrayList<TextView> mLabelViews = new ArrayList<TextView>();
 
-    private static final int BATTERY_STYLE_NORMAL         = 0;
-    private static final int BATTERY_STYLE_PERCENT        = 1;
-    private static final int BATTERY_STYLE_ICON_PERCENT   = 2;
+    private static final int BATTERY_STYLE_NORMAL = 0;
+    private static final int BATTERY_STYLE_PERCENT = 1;
+    private static final int BATTERY_STYLE_ICON_PERCENT = 2;
     /***
-     * BATTERY_STYLE_CIRCLE* cannot be handled in this controller, since we cannot get views from
-     * statusbar here. Yet it is listed for completion and not to confuse at future updates
-     * See CircleBattery.java for more info
-     *
-     * set to public to be reused by CircleBattery
-     */
-    public  static final int BATTERY_STYLE_CIRCLE                = 3;
-    public  static final int BATTERY_STYLE_CIRCLE_PERCENT        = 4;
-    public  static final int BATTERY_STYLE_DOTTED_CIRCLE         = 5;
-    public  static final int BATTERY_STYLE_DOTTED_CIRCLE_PERCENT = 6;
-    public  static final int BATTERY_STYLE_GONE                  = 7;
+* BATTERY_STYLE_CIRCLE* cannot be handled in this controller, since we cannot get views from
+* statusbar here. Yet it is listed for completion and not to confuse at future updates
+* See CircleBattery.java for more info
+*
+* set to public to be reused by CircleBattery
+*/
+    public static final int BATTERY_STYLE_CIRCLE = 3;
+    public static final int BATTERY_STYLE_CIRCLE_PERCENT = 4;
+    public static final int BATTERY_STYLE_DOTTED_CIRCLE = 5;
+    public static final int BATTERY_STYLE_DOTTED_CIRCLE_PERCENT = 6;
+    public static final int BATTERY_STYLE_GONE = 7;
 
-    private static final int BATTERY_ICON_STYLE_NORMAL      = R.drawable.stat_sys_battery;
-    private static final int BATTERY_ICON_STYLE_CHARGE      = R.drawable.stat_sys_battery_charge;
-    private static final int BATTERY_ICON_STYLE_NORMAL_MIN  = R.drawable.stat_sys_battery_min;
-    private static final int BATTERY_ICON_STYLE_CHARGE_MIN  = R.drawable.stat_sys_battery_charge_min;
+    private static final int BATTERY_ICON_STYLE_NORMAL = R.drawable.stat_sys_battery;
+    private static final int BATTERY_ICON_STYLE_CHARGE = R.drawable.stat_sys_battery_charge;
+    private static final int BATTERY_ICON_STYLE_NORMAL_MIN = R.drawable.stat_sys_battery_min;
+    private static final int BATTERY_ICON_STYLE_CHARGE_MIN = R.drawable.stat_sys_battery_charge_min;
 
-    private static final int BATTERY_TEXT_STYLE_NORMAL  = R.string.status_bar_settings_battery_meter_format;
-    private static final int BATTERY_TEXT_STYLE_MIN     = R.string.status_bar_settings_battery_meter_min_format;
+    private static final int BATTERY_TEXT_STYLE_NORMAL = R.string.status_bar_settings_battery_meter_format;
+    private static final int BATTERY_TEXT_STYLE_MIN = R.string.status_bar_settings_battery_meter_min_format;
 
     private boolean mBatteryPlugged = false;
-
-    private int color = 0;
     private int mLevel = 0;
-    private int customColor;
-    private int mBatteryStyle;
     private int mTextColor = -2;
     private int mTextChargingColor = -2;
-
+    private int mBatteryStyle;
     private int mBatteryIcon = BATTERY_ICON_STYLE_NORMAL;
 
     Handler mHandler;
@@ -112,12 +102,6 @@ public class BatteryController extends BroadcastReceiver {
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_TEXT_CHARGING_COLOR),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_ICON_COLOR),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.ICON_COLOR_BEHAVIOR),
                     false, this);
         }
 
@@ -182,22 +166,16 @@ public class BatteryController extends BroadcastReceiver {
 
             mBatteryPlugged = false;
             switch (status) {
-                case BatteryManager.BATTERY_STATUS_CHARGING: 
+                case BatteryManager.BATTERY_STATUS_CHARGING:
                 case BatteryManager.BATTERY_STATUS_FULL:
                     mBatteryPlugged = true;
                     break;
             }
 
+
             int N = mIconViews.size();
             for (int i=0; i<N; i++) {
                 ImageView v = mIconViews.get(i);
-                Drawable batteryBitmap = mContext.getResources().getDrawable(icon);
-                if (customColor==1) {
-                    batteryBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-                } else {
-                    batteryBitmap.clearColorFilter();
-                }
-                v.setImageDrawable(batteryBitmap);
                 v.setImageLevel(mLevel);
                 v.setContentDescription(mContext.getString(R.string.accessibility_battery_level,
                         mLevel));
@@ -217,7 +195,6 @@ public class BatteryController extends BroadcastReceiver {
             for (BatteryStateChangeCallback cb : mChangeCallbacks) {
                 cb.onBatteryLevelChanged(mLevel, mBatteryPlugged);
             }
-
             updateBattery();
         }
     }
@@ -270,9 +247,9 @@ public class BatteryController extends BroadcastReceiver {
             // if charging turn to green or to custom user color
             if (mLevel <= 14 && !mBatteryPlugged) {
                 v.setTextColor(Color.RED);
-            } else if (mTextColor == -2  && !mBatteryPlugged) {
+            } else if (mTextColor == -2 && !mBatteryPlugged) {
                 v.setTextColor(mContext.getResources().getColor(com.android.internal.R.color.holo_blue_light));
-            } else if (mTextChargingColor != -2  && mBatteryPlugged) {
+            } else if (mTextChargingColor != -2 && mBatteryPlugged) {
                 v.setTextColor(mTextChargingColor);
             } else if (mBatteryPlugged) {
                 v.setTextColor(Color.GREEN);
@@ -287,12 +264,6 @@ public class BatteryController extends BroadcastReceiver {
 
         mBatteryStyle = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_BATTERY, 0));
-
-        color = (Settings.System.getInt(resolver,
-                Settings.System.STATUS_ICON_COLOR, 0));
-
-        customColor = (Settings.System.getInt(resolver,
-                Settings.System.ICON_COLOR_BEHAVIOR, 0));
 
         boolean disableStatusBarInfo = Settings.System.getInt(resolver,
                 Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1;
