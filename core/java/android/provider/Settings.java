@@ -3764,8 +3764,7 @@ public final class Settings {
          */
         public static final String HIGH_END_GFX_ENABLED = "high_end_gfx_enabled";
 
-<<<<<<< HEAD
-         /**
+        /**
           * Volume keys control cursor in text fields (default is 0)
           * 0 - Disabled
           * 1 - Volume up/down moves cursor left/right
@@ -3773,7 +3772,6 @@ public final class Settings {
           * @hide
           */
          public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-=======
         /**
          * Status icon color.
          *
@@ -3787,11 +3785,6 @@ public final class Settings {
          * @hide
          */
         public static final String ICON_COLOR_BEHAVIOR = "icon_color_behavior";
-
-        /**
-         * LiquidSmooth Settings (Others)
-         */
->>>>>>> d14e0c6... Status Icon Color
 
         /**
          * Whether to unlock the screen with the home key.  The value is boolean (1 or 0).
