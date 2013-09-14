@@ -594,6 +594,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     private float mVelocityScale = 1.0f;
 
     final boolean[] mIsScrap = new boolean[1];
+boolean mIsGridView = false;
 
     // True when the popup should be hidden because of a call to
     // dispatchDisplayHint()
