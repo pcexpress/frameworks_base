@@ -192,7 +192,7 @@ public class BatteryController extends BroadcastReceiver {
             for (int i=0; i<N; i++) {
                 ImageView v = mIconViews.get(i);
                 Drawable batteryBitmap = mContext.getResources().getDrawable(icon);
-                if (customColor) {
+                if (customColor=1) {
                     batteryBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
                 } else {
                     batteryBitmap.clearColorFilter();
@@ -292,7 +292,7 @@ public class BatteryController extends BroadcastReceiver {
                 Settings.System.STATUS_ICON_COLOR, 0));
 
         customColor = (Settings.System.getInt(resolver,
-                Settings.System.ICON_COLOR_BEHAVIOR, 0)) == 1;
+                Settings.System.ICON_COLOR_BEHAVIOR, 0));
 
         boolean disableStatusBarInfo = Settings.System.getInt(resolver,
                 Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1;

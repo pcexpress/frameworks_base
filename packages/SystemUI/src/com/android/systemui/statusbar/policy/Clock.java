@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2006 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2006 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.android.systemui.statusbar.policy;
 
@@ -44,13 +44,13 @@ import java.util.TimeZone;
 import libcore.icu.LocaleData;
 
 /**
- * Digital clock for the status bar.
- */
+* Digital clock for the status bar.
+*/
 public class Clock extends TextView {
-    public static final int AM_PM_STYLE_NORMAL  = 0;
-    public static final int AM_PM_STYLE_SMALL   = 1;
-    public static final int AM_PM_STYLE_GONE    = 2;
-    public static final int PROTEKK_O_CLOCK     = 3;
+    public static final int AM_PM_STYLE_NORMAL = 0;
+    public static final int AM_PM_STYLE_SMALL = 1;
+    public static final int AM_PM_STYLE_GONE = 2;
+    public static final int PROTEKK_O_CLOCK = 3;
 
     public static final int CLOCK_DATE_DISPLAY_GONE = 0;
     public static final int CLOCK_DATE_DISPLAY_SMALL = 1;
@@ -64,8 +64,8 @@ public class Clock extends TextView {
 
     protected int mClockDateStyle = CLOCK_DATE_STYLE_UPPERCASE;
 
-    public static final int STYLE_CLOCK_RIGHT   = 0;
-    public static final int STYLE_CLOCK_CENTER  = 1;
+    public static final int STYLE_CLOCK_RIGHT = 0;
+    public static final int STYLE_CLOCK_CENTER = 1;
 
     protected int mClockStyle = STYLE_CLOCK_RIGHT;
 
@@ -108,12 +108,6 @@ public class Clock extends TextView {
                     this);
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUSBAR_CLOCK_DATE_FORMAT), false,
-                    this);
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUS_ICON_COLOR), false,
-                    this);
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.ICON_COLOR_BEHAVIOR), false,
                     this);
             updateSettings();
         }
@@ -214,10 +208,10 @@ public class Clock extends TextView {
         String format = is24 ? d.timeFormat24 : d.timeFormat12;
         if (!format.equals(mClockFormatString)) {
             /*
-             * Search for an unquoted "a" in the format string, so we can
-             * add dummy characters around it to let us find it again after
-             * formatting and change its size.
-             */
+* Search for an unquoted "a" in the format string, so we can
+* add dummy characters around it to let us find it again after
+* formatting and change its size.
+*/
             if (mAmPmStyle != AM_PM_STYLE_NORMAL) {
                 int a = -1;
                 boolean quoted = false;
@@ -338,28 +332,14 @@ public class Clock extends TextView {
 
         int defaultColor = getResources().getColor(
                 com.android.internal.R.color.holo_blue_light);
-        int customColor = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
-
-        if (customColor) {
-            clockColor = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUS_ICON_COLOR, defaultColor);
-            if (clockColor == Integer.MIN_VALUE) {
-                // flag to reset the color
-                clockColor = defaultColor;
-            }
-            setTextColor(clockColor);
-        } else {
-            mClockColor = Settings.System.getInt(resolver,
-                    Settings.System.STATUSBAR_CLOCK_COLOR, -2);
-            if (mClockColor == Integer.MIN_VALUE
-                    || mClockColor == -2) {
-                // flag to reset the color
-                mClockColor = defaultColor;
-            }
-            setTextColor(mClockColor);
+        mClockColor = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_CLOCK_COLOR, -2);
+        if (mClockColor == Integer.MIN_VALUE
+                || mClockColor == -2) {
+            // flag to reset the color
+            mClockColor = defaultColor;
         }
-
+        setTextColor(mClockColor);
         updateClockVisibility();
         updateClock();
     }
@@ -371,4 +351,3 @@ public class Clock extends TextView {
             setVisibility(View.GONE);
     }
 }
-

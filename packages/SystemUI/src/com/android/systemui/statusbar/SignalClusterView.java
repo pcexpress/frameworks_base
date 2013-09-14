@@ -236,7 +236,7 @@ public class SignalClusterView
         if (mWifiVisible) {
             mWifiGroup.setVisibility(View.VISIBLE);
             Drawable wifiBitmap = mContext.getResources().getDrawable(mWifiStrengthId);
-            if (customColor) {
+            if (customColor=1) {
                 wifiBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             } else {
                 wifiBitmap.clearColorFilter();
@@ -259,7 +259,7 @@ public class SignalClusterView
             mMobileGroup.setVisibility(View.VISIBLE);
             if(mMobileStrengthId != 0) {
                 Drawable mobileBitmap = mContext.getResources().getDrawable(mMobileStrengthId);
-                if (customColor) {
+                if (customColor=1) {
                     mobileBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
                 } else {
                     mobileBitmap.clearColorFilter();
@@ -281,7 +281,7 @@ public class SignalClusterView
             mAirplane.setVisibility(View.VISIBLE);
             if(mAirplaneIconId != 0) {
                 Drawable AirplaneBitmap = mContext.getResources().getDrawable(mAirplaneIconId);
-                if (customColor) {
+                if (customColor=1) {
                     mAirplane.setColorFilter(color, PorterDuff.Mode.SRC_IN);
                 } else {
                     mAirplane.clearColorFilter();
@@ -299,7 +299,7 @@ public class SignalClusterView
             mEther.setVisibility(View.VISIBLE);
             if(mEtherIconId != 0) {
                 Drawable etherBitmap = mContext.getResources().getDrawable(mEtherIconId);
-                if (customColor) {
+                if (customColor=1) {
                     mEther.setColorFilter(color, PorterDuff.Mode.SRC_IN);
                 } else {
                     mEther.clearColorFilter();
@@ -346,7 +346,7 @@ public class SignalClusterView
         color = Settings.System.getInt(resolver,
                 Settings.System.STATUS_ICON_COLOR, 0);
         customColor = Settings.System.getInt(resolver,
-                Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
+                Settings.System.ICON_COLOR_BEHAVIOR, 0);
         apply();
     }
 }

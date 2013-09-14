@@ -438,7 +438,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.STATUS_ICON_COLOR, 0);
 
             customColor = Settings.System.getInt(resolver,
-                    Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
+                    Settings.System.ICON_COLOR_BEHAVIOR, 0);
 
             if (mHasSettingsPanel) {
                 mSettingsButton.setVisibility(notificationSettingsBtn ? View.VISIBLE : View.GONE);
@@ -1291,7 +1291,7 @@ if (mHaloActive) mTickerView.setVisibility(View.GONE);
                 + " icon=" + icon);
 
         Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (customColor) {
+        if (customColor=1) {
             iconDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         } else {
             iconDrawable.clearColorFilter();
@@ -1310,7 +1310,7 @@ if (mHaloActive) mTickerView.setVisibility(View.GONE);
                 + " old=" + old + " icon=" + icon);
 
         Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (customColor) {
+        if (customColor=1) {
             iconDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         } else {
             iconDrawable.clearColorFilter();
