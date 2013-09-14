@@ -89,7 +89,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -617,8 +616,10 @@ if (mHaloButton != null && mHasFlipSettings) {
             addNavigationBarCallback(mNavigationBarView);
         }
 
+
 	 if (mRecreating) {
             removeSidebarView();
+	    addActiveDisplayView();
         }
         addSidebarView(); 
 
@@ -2778,7 +2779,7 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
         setAreThereNotifications();
     }
 
-    private boolean areLightsOn() {
+    public boolean areLightsOn() {
         return 0 == (mSystemUiVisibility & View.SYSTEM_UI_FLAG_LOW_PROFILE);
     }
 
@@ -2798,8 +2799,13 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
         }
     }
 
+    public void setNavigationBarLightsOn(boolean on, boolean force) {
+        mNavigationBarView.setLowProfile(!on, true, force);
+    }
+
+
     @Override
-    public void topAppWindowChanged(boolean showMenu) {
+   public void topAppWindowChanged(boolean showMenu) {
         mTransparencyManager.update();
         if (DEBUG) {
             Slog.d(TAG, (showMenu?"showing":"hiding") + " the MENU button");
