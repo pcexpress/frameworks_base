@@ -75,7 +75,6 @@ public class BatteryController extends BroadcastReceiver {
     private static final int BATTERY_TEXT_STYLE_NORMAL = R.string.status_bar_settings_battery_meter_format;
     private static final int BATTERY_TEXT_STYLE_MIN = R.string.status_bar_settings_battery_meter_min_format;
 
-    private boolean customColor;
     private boolean mBatteryPlugged = false;
 
     private int color = 0;
@@ -112,12 +111,6 @@ public class BatteryController extends BroadcastReceiver {
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_TEXT_CHARGING_COLOR),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_ICON_COLOR),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.ICON_COLOR_BEHAVIOR),
                     false, this);
         }
 
@@ -191,13 +184,6 @@ public class BatteryController extends BroadcastReceiver {
             int N = mIconViews.size();
             for (int i=0; i<N; i++) {
                 ImageView v = mIconViews.get(i);
-                Drawable batteryBitmap = mContext.getResources().getDrawable(mBatteryIcon);
-                if (customColor) {
-                    batteryBitmap.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-                } else {
-                    batteryBitmap.clearColorFilter();
-                }
-                v.setImageDrawable(batteryBitmap);
                 v.setImageLevel(mLevel);
                 v.setContentDescription(mContext.getString(R.string.accessibility_battery_level,
                         mLevel));
@@ -287,12 +273,6 @@ public class BatteryController extends BroadcastReceiver {
 
         mBatteryStyle = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_BATTERY, 0));
-
-        color = (Settings.System.getInt(resolver,
-                Settings.System.STATUS_ICON_COLOR, 0));
-
-        customColor = (Settings.System.getInt(resolver,
-                Settings.System.ICON_COLOR_BEHAVIOR, 0)) == 1;
 
         boolean disableStatusBarInfo = Settings.System.getInt(resolver,
                 Settings.System.PIE_DISABLE_STATUSBAR_INFO, 0) == 1;

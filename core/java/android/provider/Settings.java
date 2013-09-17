@@ -3785,20 +3785,6 @@ public final class Settings {
           */
          public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
        
-	/**
-         * Status icon color.
-         *
-         * @hide
-         */
-        public static final String STATUS_ICON_COLOR = "status_icon_color";
-
-        /**
-         * Reset to default icon of System Icons in Statusbar.
-         *
-         * @hide
-         */
-        public static final String ICON_COLOR_BEHAVIOR = "icon_color_behavior";
-
         /**
          * Whether to unlock the screen with the home key.  The value is boolean (1 or 0).
          * @hide
