@@ -90,8 +90,6 @@ public class CircleBattery extends ImageView {
     private int mCircleTextChargingColor;
     private int mCircleAnimSpeed;
 
-    private boolean customColor;
-    private int color = 0;
 
     // runnable to invalidate view via mHandler.postDelayed() call
     private final Runnable mInvalidate = new Runnable() {
@@ -133,9 +131,6 @@ public class CircleBattery extends ImageView {
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_ICON_COLOR),
                     false, this);
         }
 
@@ -292,13 +287,7 @@ public class CircleBattery extends ImageView {
                 mPaintFont.setColor(mPaintRed.getColor());
             } else if (mIsCharging) {
                 mPaintFont.setColor(mCircleTextChargingColor);
-            } else {
-                if (customColor) {
-                    mPaintFont.setColor(color);
-                } else {
-                    mPaintFont.setColor(mCircleTextColor);
-                }
-            }
+            } 
             canvas.drawText(Integer.toString(level), textX, mTextY, mPaintFont);
         }
 
@@ -351,10 +340,6 @@ public class CircleBattery extends ImageView {
         mCircleAnimSpeed = (Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED, 3));
 
-        color = Settings.System.getInt(resolver,
-                Settings.System.STATUS_ICON_COLOR, 0);
-        customColor = Settings.System.getInt(resolver,
-                Settings.System.ICON_COLOR_BEHAVIOR, 0) == 1;
 
         int defaultColor = res.getColor(R.color.holo_blue_dark);
 
@@ -410,13 +395,9 @@ public class CircleBattery extends ImageView {
         mPaintGray = new Paint(mPaintFont);
         mPaintSystem = new Paint(mPaintFont);
         mPaintRed = new Paint(mPaintFont);
-
-        if (customColor) {
-            mPaintSystem.setColor(color);
-            mPaintGray.setColor(color);
-        } else {
-            mPaintSystem.setColor(mCircleColor);
-            mPaintGray.setColor(res.getColor(R.color.darker_gray));
+        
+        mPaintSystem.setColor(mCircleColor);
+        mPaintGray.setColor(res.getColor(R.color.darker_gray));
         }
         // could not find the darker definition anywhere in resources
         // do not want to use static 0x404040 color value. would break theming.
