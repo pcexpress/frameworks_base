@@ -1291,7 +1291,7 @@ mHaloTime.setAntiAlias(true);
                         if (mState != State.GESTURES && mState != State.DRAG) {
                             final int c = getHaloMsgCount()-getHidden() < 0 ? 0 : getHaloMsgCount()-getHidden();
                             mEffect.animateHaloBatch(0, c, false, 3000, HaloProperties.MessageType.MESSAGE);
-		      }
+  
                     }
                 }, 2000);
             }
