@@ -119,6 +119,7 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.Prefs;
+import com.android.systemui.statusbar.policy.WeatherPanel;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import android.content.res.Configuration;
 import com.android.systemui.statusbar.AppSidebar; 
@@ -239,6 +240,12 @@ public class PhoneStatusBar extends BaseStatusBar {
     View mNotificationPanelHeader;
     View mClearButton;
     ImageView mSettingsButton, mQuickSettingsButton, mNotificationButton;
+
+    // AOKP - weatherpanel
+    boolean mWeatherPanelEnabled;
+    WeatherPanel mWeatherPanel;
+    private String mShortClickWeather;
+    private String mLongClickWeather;
 
     // carrier/wifi label
     private TextView mCarrierLabel;
@@ -408,6 +415,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIFICATION_SETTINGS_BUTTON), false, this);
   	    resolver.registerContentObserver(Settings.System.getUriFor(
                   Settings.System.APP_SIDEBAR_POSITION), false, this, UserHandle.USER_ALL);
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
               update();
         }
 
@@ -434,7 +445,26 @@ public class PhoneStatusBar extends BaseStatusBar {
             boolean notificationSettingsBtn = Settings.System.getInt(
                     resolver, Settings.System.NOTIFICATION_SETTINGS_BUTTON, 0) == 1;
 
-            if (mHasSettingsPanel) {
+	    mWeatherPanelEnabled = (Settings.System.getInt(cr,
+                Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 1)
+                && (Settings.System.getBoolean(cr, Settings.System.USE_WEATHER, false));
+
+            mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
+
+            mShortClickWeather = Settings.System.getString(cr,
+                Settings.System.WEATHER_PANEL_SHORTCLICK);
+
+            mLongClickWeather = Settings.System.getString(cr,
+                Settings.System.WEATHER_PANEL_LONGCLICK);
+
+            if (mShortClickWeather == null || mShortClickWeather.equals("")) {
+            	mShortClickWeather = "**null**";
+            }
+            if (mLongClickWeather == null || mLongClickWeather.equals("")) {
+            	mLongClickWeather = "**null**";
+            }
+
+	    if (mHasSettingsPanel) {
                 mSettingsButton.setVisibility(notificationSettingsBtn ? View.VISIBLE : View.GONE);
             } else {
                 mSettingsButton.setVisibility(View.GONE);
@@ -666,8 +696,14 @@ to make sure there are no context issues */
         mSettingsButton = (ImageView) mStatusBarWindow.findViewById(R.id.settings_button);
         mSettingsButton.setOnClickListener(mSettingsButtonListener);
 
+
         boolean notificationSettingsBtn = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_SETTINGS_BUTTON, 0) == 1;
+
+        // Weather
+        mWeatherPanel = (WeatherPanel) mStatusBarWindow.findViewById(R.id.weatherpanel);
+        mWeatherPanel.setOnClickListener(mWeatherPanelListener);
+        mWeatherPanel.setOnLongClickListener(mWeatherPanelLongClickListener);
 
         mQuickSettingsButton = (ImageView) mStatusBarWindow.findViewById(R.id.quicksettings_button);
         if (mQuickSettingsButton != null) {
@@ -3264,7 +3300,7 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
     };
 
     private View.OnClickListener mHaloButtonListener = new View.OnClickListener() {
-        public void onClick(View v) {
+	 public void onClick(View v) {
             // Activate HALO
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.HALO_ACTIVE, 1);
@@ -3272,6 +3308,23 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
             mTickerView.setVisibility(View.GONE);
             // Collapse
             animateCollapsePanels();
+        }
+    };
+
+    private View.OnClickListener mWeatherPanelListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            vibrate();
+            animateCollapsePanels();
+            AwesomeAction.launchAction(mContext, mShortClickWeather);
+        }
+    };
+
+    private View.OnLongClickListener mWeatherPanelLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            animateCollapsePanels();
+            AwesomeAction.launchAction(mContext, mLongClickWeather);
+            return true;
         }
     };
 
