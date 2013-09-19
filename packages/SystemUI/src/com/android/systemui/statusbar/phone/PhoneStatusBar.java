@@ -3307,7 +3307,7 @@ if (mHaloButtonAnim != null) mHaloButtonAnim.cancel();
         }
     };
 
-    private void updateSwapXY() {
+   private void updateSwapXY() {
         if (mNavigationBarView != null
             && mNavigationBarView.mDelegateHelper != null) {
                 if (Settings.System.getIntForUser(mContext.getContentResolver(),
