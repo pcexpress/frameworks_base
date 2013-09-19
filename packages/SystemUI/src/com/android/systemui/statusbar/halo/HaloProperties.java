@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2013 ParanoidAndroid.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2013 ParanoidAndroid.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.android.systemui.statusbar.halo;
 
@@ -90,7 +90,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
     protected int mHaloContentY = 0;
     protected float mHaloContentAlpha = 0;
     private int mHaloContentHeight = 0;
-    private int mMsgCount, mValue;
+private int mMsgCount, mValue;
     private int mBatteryLevel = 0;
     private boolean mCharging = false;
     private boolean airPlaneMode;
@@ -207,7 +207,6 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         controller.addNetworkSignalChangedCallback(this);
 
         mCm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
         mHandler = new Handler();
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
@@ -228,7 +227,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         newPaddingHShort = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_short) * fraction);
         newPaddingHWide = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_wide) * fraction);
         newPaddingVTop = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_top) * fraction);
-        newPaddingVBottom = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_bottom) * fraction);        
+        newPaddingVBottom = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_bottom) * fraction);
 
         final int newBatchSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_number_size) * fraction);
         final int newBatchIconSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_number_icon_size) * fraction);
@@ -261,7 +260,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
     }
 
     public int getHaloX() {
-        return mHaloX; 
+        return mHaloX;
     }
 
     public int getHaloY() {
@@ -273,7 +272,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
     }
 
     public int getHaloContentY() {
-        return mHaloContentY; 
+        return mHaloContentY;
     }
 
     protected CustomObjectAnimator msgNumberFlipAnimator = new CustomObjectAnimator(this);
@@ -326,7 +325,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
                         } else {
                             mHaloNumberIcon.setImageDrawable(mHaloIconMessage);
                         }
-                        mHaloNumberContainer.setAlpha(1f);
+mHaloNumberContainer.setAlpha(1f);
                         mHaloNumberIcon.setAlpha(1f);
                     } else if (mValue > 0 && mValue < 100) {
                         mHaloNumber.setText(String.valueOf(mValue));
@@ -334,7 +333,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
                         mHaloNumber.setAlpha(1f);
                     } else if (mValue >= 100) {
                         mHaloNumber.setText("+");
-                        mHaloNumberContainer.setAlpha(1f);
+mHaloNumberContainer.setAlpha(1f);
                         mHaloNumber.setAlpha(1f);
                     }
                     
@@ -655,8 +654,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         }
         return string;
     }
-
-    public class SettingsObserver extends ContentObserver {
+    class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
@@ -689,7 +687,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
                Settings.System.HALO_CIRCLE_COLOR, 0xFF33B5E5);
         mSpeechColor = Settings.System.getInt(cr,
                Settings.System.HALO_BUBBLE_COLOR, 0xFF33B5E5);
-        mSpeechTextColor = Settings.System.getInt(cr, 
+        mSpeechTextColor = Settings.System.getInt(cr,
                Settings.System.HALO_BUBBLE_TEXT_COLOR, 0xFFFFFFFF);
 
         if (mEnableColor) {
