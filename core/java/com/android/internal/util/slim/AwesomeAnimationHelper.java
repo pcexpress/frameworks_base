@@ -18,7 +18,7 @@ package com.android.internal.util.slim;
 
 import android.content.Context;
 import android.content.res.Resources;
-
+import android.internal.R;
 import java.util.ArrayList;
 
 public class AwesomeAnimationHelper {
