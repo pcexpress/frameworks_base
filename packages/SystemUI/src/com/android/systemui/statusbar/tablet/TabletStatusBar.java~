@@ -664,9 +664,9 @@ public class TabletStatusBar extends BaseStatusBar implements
 
 	if (mRecreating) {
             removeSidebarView();
+	    addActiveDisplayView();
         }
         addSidebarView();
-        addActiveDisplayView();
         return sb;
     }
 

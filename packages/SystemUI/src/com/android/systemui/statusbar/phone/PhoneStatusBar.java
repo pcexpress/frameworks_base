@@ -620,9 +620,9 @@ if (mHaloButton != null && mHasFlipSettings) {
 
 	 if (mRecreating) {
             removeSidebarView();
-	    addActiveDisplayView();
         }
         addSidebarView(); 
+        addActiveDisplayView();
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
