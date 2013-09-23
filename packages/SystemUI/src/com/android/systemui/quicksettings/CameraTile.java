@@ -271,6 +271,7 @@ public static CameraTile mInstance;
        mHandler = handler;
 
         mTileLayout = R.layout.quick_settings_tile_camera;
+	mDrawable = R.drawable.ic_qs_camera;
         String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
         try {
             final Resources camRes = context.getPackageManager()
