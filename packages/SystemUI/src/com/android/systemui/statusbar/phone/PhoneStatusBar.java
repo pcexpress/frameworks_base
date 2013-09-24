@@ -121,7 +121,7 @@ import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.Prefs;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import android.content.res.Configuration;
-import com.android.systemui.statusbar.AppSidebar; 
+import com.android.systemui.statusbar.AppSidebar;
 
 public class PhoneStatusBar extends BaseStatusBar {
     static final String TAG = "PhoneStatusBar";
@@ -406,7 +406,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_SETTINGS_BUTTON), false, this);
-    	    resolver.registerContentObserver(Settings.System.getUriFor(
+     resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_SIDEBAR_POSITION), false, this, UserHandle.USER_ALL);
               update();
         }
@@ -446,12 +446,12 @@ public class PhoneStatusBar extends BaseStatusBar {
                 updateStatusBarVisibility();
             }
 
-	    int sidebarPosition = Settings.System.getInt(
+int sidebarPosition = Settings.System.getInt(
                     resolver, Settings.System.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
             if (sidebarPosition != mSidebarPosition) {
                 mSidebarPosition = sidebarPosition;
                 mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
-            } 
+            }
             showClock(true);
         }
     }
@@ -618,10 +618,10 @@ if (mHaloButton != null && mHasFlipSettings) {
         }
 
 
-	 if (mRecreating) {
+if (mRecreating) {
             removeSidebarView();
         }
-        addSidebarView(); 
+        addSidebarView();
         addActiveDisplayView();
 
         // figure out which pixel-format to use for the status bar.
@@ -3296,14 +3296,14 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
                 if (DEBUG) {
                     Slog.v(TAG, "configuration changed: " + mContext.getResources().getConfiguration());
                 }
-		Configuration config = mContext.getResources().getConfiguration(); 
+Configuration config = mContext.getResources().getConfiguration();
                 mDisplay.getSize(mCurrentDisplaySize);
                 updateResources();
                 repositionNavigationBar();
                 updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
                 updateSwapXY();
                 updateShowSearchHoldoff();
-		try {
+try {
                     // position app sidebar on left if in landscape orientation and device has a navbar
                     if (mWindowManagerService.hasNavigationBar() &&
                                 config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -3317,7 +3317,7 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
                         }, 500);
                     }
                 } catch (RemoteException e) {
-                } 
+                }
 
             } else if (Intent.ACTION_SCREEN_ON.equals(action)) {
                 // work around problem where mDisplay.getRotation() is not stable while screen is off (bug 7086018)

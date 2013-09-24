@@ -29,6 +29,7 @@ import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.Notification;
+import android.content.ActivityNotFoundException;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
@@ -119,9 +120,15 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.Prefs;
+import com.android.systemui.statusbar.policy.WeatherPanel;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import android.content.res.Configuration;
 import com.android.systemui.statusbar.AppSidebar; 
+
+import java.net.URISyntaxException;
+
+
+
 
 public class PhoneStatusBar extends BaseStatusBar {
     static final String TAG = "PhoneStatusBar";
@@ -177,7 +184,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                                                     // faster than mSelfCollapseVelocityPx)
 
     private final String NOTIF_WALLPAPER_IMAGE_PATH = "/data/data/com.android.settings/files/notification_wallpaper.jpg";
-
+    final static String ACTION_UPDATE = "**update**";
+    final static String ACTION_NOTHING = "**nothing**";
     PhoneStatusBarPolicy mIconPolicy;
 
     // These are no longer handled by the policy, because we need custom strategies for them
@@ -215,6 +223,10 @@ public class PhoneStatusBar extends BaseStatusBar {
     // [+>
     View mMoreIcon;
 
+    // AOKP - weatherpanel
+    boolean mWeatherPanelEnabled;
+    WeatherPanel mWeatherPanel;
+
     // expanded notifications
     NotificationPanelView mNotificationPanel; // the sliding/resizing panel within the notification window
     ScrollView mScrollView;
@@ -249,7 +261,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     private int mCarrierAndWifiViewHeight;
     private TextView mEmergencyCallLabel;
     private int mNotificationHeaderHeight;
-
+    private Intent intent;
     private boolean mShowCarrierInPanel = false;
 
     // clock
@@ -306,6 +318,9 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     private Animator mLightsOutAnimation;
     private Animator mLightsOnAnimation;
+
+    private String mShortClickWeather;
+    private String mLongClickWeather;
 
     // last theme that was applied in order to detect theme change (as opposed
     // to some other configuration change).
@@ -408,6 +423,19 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIFICATION_SETTINGS_BUTTON), false, this);
     	    resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_SIDEBAR_POSITION), false, this, UserHandle.USER_ALL);
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_WEATHER_STYLE), false, this);
+
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.USE_WEATHER), false, this);
+	    
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
+            
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
+            
+
               update();
         }
 
@@ -417,8 +445,21 @@ public class PhoneStatusBar extends BaseStatusBar {
         }
 
         public void update() {
-            ContentResolver resolver = mContext.getContentResolver();
-            boolean autoBrightness = Settings.System.getIntForUser(
+        
+           ContentResolver resolver = mContext.getContentResolver();
+
+	    mShortClickWeather = Settings.System.getString(resolver,
+                Settings.System.WEATHER_PANEL_SHORTCLICK);
+
+            mLongClickWeather = Settings.System.getString(resolver,
+                Settings.System.WEATHER_PANEL_LONGCLICK);
+            mWeatherPanelEnabled = (Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 1)
+                && (Settings.System.getBoolean(resolver, Settings.System.USE_WEATHER, false));
+        
+            mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
+    
+	    boolean autoBrightness = Settings.System.getIntForUser(
                     resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0, mCurrentUserId) ==
                     Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
             mBrightnessControl = !autoBrightness && Settings.System.getInt(
@@ -620,13 +661,16 @@ if (mHaloButton != null && mHasFlipSettings) {
 
 	 if (mRecreating) {
             removeSidebarView();
-	    addActiveDisplayView();
         }
         addSidebarView(); 
+        addActiveDisplayView();
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
 
+	mWeatherPanel = (WeatherPanel) mStatusBarWindow.findViewById(R.id.weatherpanel);
+        mWeatherPanel.setOnClickListener(mWeatherPanelListener);
+        mWeatherPanel.setOnLongClickListener(mWeatherPanelLongClickListener);   
         mSystemIconArea = (LinearLayout) mStatusBarView.findViewById(R.id.system_icon_area);
         mStatusIcons = (LinearLayout)mStatusBarView.findViewById(R.id.statusIcons);
         mNotificationIcons = (IconMerger)mStatusBarView.findViewById(R.id.notificationIcons);
@@ -967,6 +1011,13 @@ if (mHaloActive) mTickerView.setVisibility(View.GONE);
 
         updatePropFactorValue();
 
+	if (mShortClickWeather == null || mShortClickWeather == "") {
+            mShortClickWeather = "**nothing**";
+        }
+        if (mLongClickWeather == null || mLongClickWeather == "") {
+            mLongClickWeather = "**nothing**";
+        }
+
         mTransparencyManager.setStatusbar(mStatusBarView);
 
         return mStatusBarView;
@@ -1143,6 +1194,73 @@ if (mHaloActive) mTickerView.setVisibility(View.GONE);
         public void run() {
             showSearchPanel();
             awakenDreams();
+        }
+    };
+
+    private View.OnClickListener mWeatherPanelListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (mShortClickWeather.equals(ACTION_NOTHING)) {
+            // do nothing
+            } else {
+                try {
+                    ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                if (mShortClickWeather.equals(ACTION_UPDATE)) {
+                    Intent weatherintent = new Intent("com.android.settings.INTENT_WEATHER_REQUEST");
+                    weatherintent.putExtra("com.android.settings.INTENT_EXTRA_TYPE", "updateweather");
+                    weatherintent.putExtra("com.android.settings.INTENT_EXTRA_ISMANUAL", true);
+                    v.getContext().sendBroadcast(weatherintent);
+                } else {
+                    try {
+                        intent = Intent.parseUri(mShortClickWeather, 0);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    } catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                   animateCollapsePanels();
+                }
+            }
+        }
+    };
+    
+   
+
+    private View.OnLongClickListener mWeatherPanelLongClickListener = new View.OnLongClickListener() {
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (mLongClickWeather.equals(ACTION_NOTHING)) {
+                return true;
+            } else {
+                try {
+                    ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                if (mLongClickWeather.equals(ACTION_UPDATE)) {
+                    Intent weatherintent = new Intent("com.android.settings.INTENT_WEATHER_REQUEST");
+                    weatherintent.putExtra("com.android.settings.INTENT_EXTRA_TYPE", "updateweather");
+                    weatherintent.putExtra("com.android.settings.INTENT_EXTRA_ISMANUAL", true);
+                    v.getContext().sendBroadcast(weatherintent);
+                } else {
+                    try {
+                        intent = Intent.parseUri(mLongClickWeather, 0);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        mContext.startActivity(intent);
+                    } catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+                   animateCollapsePanels();
+                 }
+            }
+        return true;
         }
     };
 
@@ -3742,6 +3860,8 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
             cr.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.SYSTEMUI_NAVBAR_CONFIG),
                     false, this);
+
+	   
         }
     }
 
