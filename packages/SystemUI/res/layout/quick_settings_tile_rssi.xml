@@ -15,37 +15,36 @@ limitations under the License.
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center"
     android:orientation="vertical">
     <FrameLayout
-        android:layout_width="@dimen/qs_tile_icon_size"
-        android:layout_height="@dimen/qs_tile_icon_size"
-        android:layout_gravity="center_horizontal"
-        >
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
         <ImageView
             android:id="@+id/rssi_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:paddingBottom="10dp"
             />
         <ImageView
             android:id="@+id/rssi_overlay_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:paddingBottom="10dp"
             />
     </FrameLayout>
     <TextView
         style="@style/TextAppearance.QuickSettings.TileView"
         android:id="@+id/rssi_textview"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:singleLine="true"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="@string/quick_settings_rssi_label"
         />
 </LinearLayout>

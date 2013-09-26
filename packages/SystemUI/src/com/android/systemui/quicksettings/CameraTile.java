@@ -272,6 +272,14 @@ public static CameraTile mInstance;
 
         mTileLayout = R.layout.quick_settings_tile_camera;
 	mDrawable = R.drawable.ic_qs_camera;
+	TextView tv = (TextView) mTile.findViewById(R.id.rssi_textview);
+
+	if (tv != null) {
+        tv.setTextSize(1, mTileTextSize);
+        if (mTileTextColor != -2) {
+            tv.setTextColor(mTileTextColor);
+	}
+
         String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
         try {
             final Resources camRes = context.getPackageManager()
