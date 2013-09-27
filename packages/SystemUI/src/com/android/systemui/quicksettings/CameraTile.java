@@ -278,6 +278,7 @@ public static CameraTile mInstance;
         tv.setTextSize(1, mTileTextSize);
         if (mTileTextColor != -2) {
             tv.setTextColor(mTileTextColor);
+	  }
 	}
 
         String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
