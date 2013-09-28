@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -148,7 +149,7 @@ public class MobileNetworkTile extends QuickSettingsTile implements NetworkSigna
             iov.setImageDrawable(null);
         }
         tv.setText(mLabel);
-        tv.setTextSize(1, mTileTextSize);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
         if (mTileTextColor != -2) {
             tv.setTextColor(mTileTextColor);
         }

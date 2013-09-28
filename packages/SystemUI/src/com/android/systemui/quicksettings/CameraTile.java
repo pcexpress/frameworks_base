@@ -33,6 +33,7 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.MediaColumns;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
@@ -43,7 +44,9 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -59,13 +62,14 @@ import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
 import android.content.BroadcastReceiver;
 
-public class CameraTile extends QuickSettingsTile {
+ public class CameraTile extends QuickSettingsTile {
     private static final String DEFAULT_IMAGE_FILE_NAME_FORMAT = "'IMG'_yyyyMMdd_HHmmss";
     private static final int CAMERA_ID = 0;
-public static CameraTile mInstance; 
+    public static CameraTile mInstance; 
 
     private Handler mHandler;
     private TextView mTextView;
+    private LinearLayout mLinearLayout;
     private FrameLayout mSurfaceLayout;
     private SurfaceView mSurfaceView;
     private View mFlashView;
@@ -155,7 +159,7 @@ public static CameraTile mInstance;
                 }
             }, 100);
 
-            mTextView.setVisibility(View.GONE);
+            mLinearLayout.setVisibility(View.GONE);
             mSurfaceView = new CameraPreview(mContext, mCamera);
             mSurfaceView.setVisibility(View.VISIBLE);
             mSurfaceLayout.addView(mSurfaceView, 0);
@@ -242,8 +246,8 @@ public static CameraTile mInstance;
             mCameraStarted = false;
             mCameraOrientationListener.disable();
 
-            mTextView.setVisibility(View.VISIBLE);
-            mSurfaceView.setVisibility(View.GONE);
+	    mLinearLayout.setVisibility(View.VISIBLE);
+	    mSurfaceView.setVisibility(View.GONE);
             mSurfaceLayout.removeView(mSurfaceView);
             mSurfaceView = null;
         }
@@ -272,16 +276,8 @@ public static CameraTile mInstance;
 
         mTileLayout = R.layout.quick_settings_tile_camera;
 	mDrawable = R.drawable.ic_qs_camera;
-	TextView tv = (TextView) mTile.findViewById(R.id.rssi_textview);
-
-	if (tv != null) {
-        tv.setTextSize(1, mTileTextSize);
-        if (mTileTextColor != -2) {
-            tv.setTextColor(mTileTextColor);
-	  }
-	}
-
-        String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
+	
+	 String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
         try {
             final Resources camRes = context.getPackageManager()
                     .getResourcesForApplication("com.android.gallery3d");
@@ -310,18 +306,25 @@ public static CameraTile mInstance;
                 return true;
             }
         };
-
+     
+        ImageView iv = (ImageView) mTile.findViewById(R.id.image);
+        iv.setImageResource(mDrawable);
         mTextView = (TextView) mTile.findViewById(R.id.camera_text);
+	mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
+            mTextView.setPadding(0, mTileTextPadding, 0, 0);
+            if (mTileTextColor != -2) {
+                mTextView.setTextColor(mTileTextColor);
+            }
         mSurfaceLayout = (FrameLayout) mTile.findViewById(R.id.camera_surface_holder);
         mFlashView = mTile.findViewById(R.id.camera_surface_flash_overlay);
-
+ 	mLinearLayout = (LinearLayout) mTile.findViewById(R.id.camera_tile_layout);
         super.onPostCreate();
     }
 
  @Override
     public void onClick(View v) {
 
-if (isEnabled()) {
+	if (isEnabled()) {
                     flipTile(0);
                 } 
         if (mCamera == null) {

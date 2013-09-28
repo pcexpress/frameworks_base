@@ -28,14 +28,14 @@ limitations under the License.
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingBottom="10dp"
+            android:paddingBottom="12dp"
             />
         <ImageView
             android:id="@+id/rssi_overlay_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingBottom="10dp"
+            android:paddingBottom="12dp"
             />
     </FrameLayout>
     <TextView
@@ -43,8 +43,9 @@ limitations under the License.
         android:id="@+id/rssi_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:singleLine="true"
         android:text="@string/quick_settings_rssi_label"
         />
 </LinearLayout>
