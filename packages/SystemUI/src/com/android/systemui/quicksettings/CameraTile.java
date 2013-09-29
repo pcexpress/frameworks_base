@@ -1,18 +1,3 @@
-/*
-* Copyright (C) 2012 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
 package com.android.systemui.quicksettings;
 
 import android.content.ContentResolver;
@@ -33,7 +18,6 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.MediaColumns;
 import android.provider.Settings;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
@@ -44,9 +28,6 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -60,16 +41,13 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.PanelView;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
-import android.content.BroadcastReceiver;
 
- public class CameraTile extends QuickSettingsTile {
+public class CameraTile extends QuickSettingsTile {
     private static final String DEFAULT_IMAGE_FILE_NAME_FORMAT = "'IMG'_yyyyMMdd_HHmmss";
     private static final int CAMERA_ID = 0;
-    public static CameraTile mInstance; 
 
     private Handler mHandler;
-    private TextView mTextView;
-    private LinearLayout mLinearLayout;
+    private View mIconContainer;
     private FrameLayout mSurfaceLayout;
     private SurfaceView mSurfaceView;
     private View mFlashView;
@@ -147,11 +125,13 @@ import android.content.BroadcastReceiver;
             mCamera.setParameters(mParams);
             updateOrientation();
 
+            final PanelView panel = getContainingPanel();
+            final View parent = (View) mContainer.getParent();
+
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    final PanelView panel = getContainingPanel();
-                    if (panel != null && panel.isFullyExpanded()) {
+                    if (panel.isFullyExpanded() && parent.getScaleX() == 1) {
                         mHandler.postDelayed(this, 100);
                     } else {
                         mHandler.post(mReleaseCameraRunnable);
@@ -159,7 +139,7 @@ import android.content.BroadcastReceiver;
                 }
             }, 100);
 
-            mLinearLayout.setVisibility(View.GONE);
+            mIconContainer.setVisibility(View.GONE);
             mSurfaceView = new CameraPreview(mContext, mCamera);
             mSurfaceView.setVisibility(View.VISIBLE);
             mSurfaceLayout.addView(mSurfaceView, 0);
@@ -246,8 +226,8 @@ import android.content.BroadcastReceiver;
             mCameraStarted = false;
             mCameraOrientationListener.disable();
 
-	    mLinearLayout.setVisibility(View.VISIBLE);
-	    mSurfaceView.setVisibility(View.GONE);
+            mIconContainer.setVisibility(View.VISIBLE);
+            mSurfaceView.setVisibility(View.GONE);
             mSurfaceLayout.removeView(mSurfaceView);
             mSurfaceView = null;
         }
@@ -262,22 +242,12 @@ import android.content.BroadcastReceiver;
         }
     };
 
-   public static QuickSettingsTile getInstance(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, final QuickSettingsController qsc, Handler handler, String id) {
-        mInstance = null;
-        mInstance = new CameraTile(context, inflater, container, qsc, handler);
-        return mInstance;
-    }
+    public CameraTile(Context context, QuickSettingsController qsc, Handler handler) {
+        super(context, qsc, R.layout.quick_settings_tile_camera);
+        mHandler = handler;
+        mLabel = mContext.getString(R.string.quick_settings_camera_label);
 
-    public CameraTile(Context context, LayoutInflater inflater,
-            QuickSettingsContainerView container, QuickSettingsController qsc, Handler handler) {
-        super(context, inflater, container, qsc);
-       mHandler = handler;
-
-        mTileLayout = R.layout.quick_settings_tile_camera;
-	mDrawable = R.drawable.ic_qs_camera;
-	
-	 String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
+        String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
         try {
             final Resources camRes = context.getPackageManager()
                     .getResourcesForApplication("com.android.gallery3d");
@@ -290,7 +260,8 @@ import android.content.BroadcastReceiver;
             // Use default
         }
         mImageNameFormatter = new SimpleDateFormat(imageFileNameFormat);
- }
+
+    }
 
     @Override
     void onPostCreate() {
@@ -306,36 +277,25 @@ import android.content.BroadcastReceiver;
                 return true;
             }
         };
-     
-        ImageView iv = (ImageView) mTile.findViewById(R.id.image);
-        iv.setImageResource(mDrawable);
-        mTextView = (TextView) mTile.findViewById(R.id.camera_text);
-	mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
-            mTextView.setPadding(0, mTileTextPadding, 0, 0);
-            if (mTileTextColor != -2) {
-                mTextView.setTextColor(mTileTextColor);
-            }
+
+        mIconContainer = mTile.findViewById(R.id.icon_container);
         mSurfaceLayout = (FrameLayout) mTile.findViewById(R.id.camera_surface_holder);
         mFlashView = mTile.findViewById(R.id.camera_surface_flash_overlay);
- 	mLinearLayout = (LinearLayout) mTile.findViewById(R.id.camera_tile_layout);
+
         super.onPostCreate();
     }
 
- @Override
+    @Override
     public void onClick(View v) {
-
-	if (isEnabled()) {
-                    flipTile(0);
-                } 
         if (mCamera == null) {
             mHandler.post(mStartRunnable);
         } else {
             mHandler.post(mTakePictureRunnable);
         }
     }
-     
+
     private PanelView getContainingPanel() {
-        ViewParent parent = mContainerView;
+        ViewParent parent = mContainer;
         while (parent != null) {
             if (parent instanceof PanelView) {
                 return (PanelView) parent;
@@ -369,7 +329,7 @@ import android.content.BroadcastReceiver;
 
         if (mCameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             cameraOrientation = (mCameraInfo.orientation + mDisplayRotation) % 360;
-            cameraOrientation = (360 - cameraOrientation) % 360;  // compensate the mirror
+            cameraOrientation = (360 - cameraOrientation) % 360; // compensate the mirror
         } else {
             cameraOrientation = (mCameraInfo.orientation - mDisplayRotation + 360) % 360;
         }
@@ -507,7 +467,7 @@ import android.content.BroadcastReceiver;
 
             try {
                 uri = resolver.insert(Images.Media.EXTERNAL_CONTENT_URI, values);
-            } catch (Throwable th)  {
+            } catch (Throwable th) {
                 // This can happen when the external volume is already mounted, but
                 // MediaScanner has not notify MediaProvider to add that volume.
                 // The picture is still safe and MediaScanner will find it and
