@@ -246,8 +246,8 @@ import android.content.BroadcastReceiver;
             mCameraStarted = false;
             mCameraOrientationListener.disable();
 
-mLinearLayout.setVisibility(View.VISIBLE);
-mSurfaceView.setVisibility(View.GONE);
+	    mLinearLayout.setVisibility(View.VISIBLE);
+	    mSurfaceView.setVisibility(View.GONE);
             mSurfaceLayout.removeView(mSurfaceView);
             mSurfaceView = null;
         }
@@ -275,9 +275,9 @@ mSurfaceView.setVisibility(View.GONE);
        mHandler = handler;
 
         mTileLayout = R.layout.quick_settings_tile_camera;
-mDrawable = R.drawable.ic_qs_camera;
+	mDrawable = R.drawable.ic_qs_camera;
 
-String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
+	String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
         try {
             final Resources camRes = context.getPackageManager()
                     .getResourcesForApplication("com.android.gallery3d");
@@ -310,21 +310,21 @@ String imageFileNameFormat = DEFAULT_IMAGE_FILE_NAME_FORMAT;
         ImageView iv = (ImageView) mTile.findViewById(R.id.image);
         iv.setImageResource(mDrawable);
         mTextView = (TextView) mTile.findViewById(R.id.camera_text);
-mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
+	mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTileTextSize);
             mTextView.setPadding(0, mTileTextPadding, 0, 0);
             if (mTileTextColor != -2) {
                 mTextView.setTextColor(mTileTextColor);
             }
         mSurfaceLayout = (FrameLayout) mTile.findViewById(R.id.camera_surface_holder);
         mFlashView = mTile.findViewById(R.id.camera_surface_flash_overlay);
-  mLinearLayout = (LinearLayout) mTile.findViewById(R.id.camera_tile_layout);
+  	mLinearLayout = (LinearLayout) mTile.findViewById(R.id.camera_tile_layout);
         super.onPostCreate();
     }
 
  @Override
     public void onClick(View v) {
 
-if (isEnabled()) {
+	if (isEnabled()) {
                     flipTile(0);
                 }
         if (mCamera == null) {
