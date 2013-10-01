@@ -3415,42 +3415,7 @@ public final class Settings {
         */
         public static final String STATUSBAR_BATTERY_ICON = "statusbar_battery_icon";
 
-        /**
-         * Whether or not to use the app sidebar
-         *
-         * @hide
-         */
-         public static final String APP_SIDE_BAR_ENABLED = "app_sidebar_enabled";
-
-        /**
-	* How to sort and order the items in the app sidebar
-	*
-	* @hide
-	*/
-        public static final String APP_SIDEBAR_SORT_TYPE = "app_sidebar_sort_type";
-
-	/**
-	* User defined transparency level for sidebar
-	*
-	* @hide
-	*/
-        public static final String APP_SIDEBAR_TRANSPARENCY = "app_sidebar_transparency";
-
-	/**
-	* Width and height of items in sidebar
-	*
-	* @hide
-	*/
-        public static final String APP_SIDEBAR_ITEM_SIZE = "app_sidebar_item_size";
-
-	/**
-	* List of apps to exclude from sidebar
-	*
-	* @hide
-	*/
-        public static final String APP_SIDEBAR_EXCLUDE_LIST = "app_sidebar_exclude_list";
-
-
+        
         /**
          * Circle battery icon color
          * in statusbar
