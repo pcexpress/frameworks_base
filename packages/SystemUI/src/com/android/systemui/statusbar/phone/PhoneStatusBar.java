@@ -3835,4 +3835,5 @@ if (mHaloButtonAnim != null) mHaloButtonAnim.cancel();
         return brightness;
     }
 
+  }
 }
