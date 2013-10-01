@@ -858,6 +858,7 @@ public class ActiveDisplayView extends FrameLayout {
                 } catch (RemoteException re) {
                 } catch (NameNotFoundException nnfe) {
                 } catch (Resources.NotFoundException e) {
+                } catch (NullPointerException npe) {
                 }
             }
         });
@@ -1003,6 +1004,7 @@ public class ActiveDisplayView extends FrameLayout {
             });
         } catch (NameNotFoundException e) {
         } catch (Resources.NotFoundException e) {
+        } catch (NullPointerException npe) {
         }
     }
 
