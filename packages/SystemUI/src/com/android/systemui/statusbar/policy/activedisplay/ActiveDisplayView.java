@@ -139,7 +139,7 @@ public class ActiveDisplayView extends FrameLayout {
     private int mIconSize;
     private int mIconMargin;
     private int mIconPadding;
-    private long mPocketTime;
+    private long mPocketTime = 0;
     private LinearLayout.LayoutParams mOverflowLayoutParams;
     private KeyguardManager mKeyguardManager;
     private KeyguardLock mKeyguardLock;
@@ -710,6 +710,7 @@ public class ActiveDisplayView extends FrameLayout {
     private void enableProximitySensor() {
         if (mPocketModeEnabled && mDisplayNotifications) {
             mProximityIsFar = true;
+            mPocketTime = 0;
             registerSensorListener(mProximitySensor);
         }
     }
@@ -1090,7 +1091,7 @@ public class ActiveDisplayView extends FrameLayout {
                 if (isFar) {
                     mProximityIsFar = true;
                     if (!isScreenOn() && mPocketModeEnabled && !isOnCall() && !inQuietHours()) {
-                        if (System.currentTimeMillis() >= (mPocketTime + POCKET_THRESHOLD)) {
+                        if (System.currentTimeMillis() >= (mPocketTime + POCKET_THRESHOLD) && mPocketTime != 0){
                             mWakedByPocketMode = true;
 
                             mNotification = getNextAvailableNotification();
