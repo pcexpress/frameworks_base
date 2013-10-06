@@ -273,6 +273,9 @@ public class PhoneStatusBar extends BaseStatusBar {
     private boolean mNotificationPanelIsOpen = false;
     private boolean mQSPanelIsOpen = false;
 
+    // Carrier
+    private boolean mShowCarrierLabel;
+
     // for immersive activities
     private IntruderAlertView mIntruderAlertView;
 
@@ -392,7 +395,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             super(handler);
         }
 
-        void observe() {
+         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
@@ -414,7 +417,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.EXPANDED_DESKTOP_STATE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_SETTINGS_BUTTON), false, this);
-  	    resolver.registerContentObserver(Settings.System.getUriFor(
+   	    resolver.registerContentObserver(Settings.System.getUriFor(
                   Settings.System.APP_SIDEBAR_POSITION), false, this, UserHandle.USER_ALL);
 	    resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
@@ -424,6 +427,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.STATUSBAR_WEATHER_STYLE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.USE_WEATHER), false, this);
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER), false, this); 
               update();
         }
 
@@ -480,6 +485,10 @@ public class PhoneStatusBar extends BaseStatusBar {
             if (mNotificationData != null) {
                 updateStatusBarVisibility();
             }
+
+	    mShowCarrierLabel = Settings.System.getInt(
+                    cr, Settings.System.STATUS_BAR_CARRIER, 0) == 1;
+            showCarrierLabel(mShowCarrierLabel);
 
 	    int sidebarPosition = Settings.System.getInt(
                     resolver, Settings.System.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
@@ -1826,6 +1835,17 @@ if (mHaloButton != null) {
         }
     }
 
+    public void showCarrierLabel(boolean show) {
+        if (mStatusBarView == null) return;
+        ContentResolver resolver = mContext.getContentResolver();
+        View statusCarrierLabel = mStatusBarView.findViewById(R.id.status_carrier_label);
+        mShowCarrierLabel = (Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CARRIER, 0) == 1);
+        if (statusCarrierLabel != null) {
+            statusCarrierLabel.setVisibility(show ? (mShowCarrierLabel ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+    }
+
     /**
 * State is one or more of the DISABLE constants from StatusBarManager.
 */
@@ -1890,6 +1910,8 @@ if (mHaloButton != null) {
         if ((diff & StatusBarManager.DISABLE_CLOCK) != 0) {
             boolean show = (state & StatusBarManager.DISABLE_CLOCK) == 0;
             showClock(show);
+            //add CarrierLabel
+            showCarrierLabel(show);
         }
         if ((diff & StatusBarManager.DISABLE_EXPAND) != 0) {
             if ((state & StatusBarManager.DISABLE_EXPAND) != 0) {
@@ -2778,7 +2800,9 @@ if (mQuickSettingsButtonAnim != null) mQuickSettingsButtonAnim.cancel();
             final View battery2 = mStatusBarView.findViewById(R.id.battery_text);
             final View battery3 = mStatusBarView.findViewById(R.id.circle_battery);
             final View clock = mStatusBarView.findViewById(R.id.clock);
-final View traffic = mStatusBarView.findViewById(R.id.traffic);
+	    final View traffic = mStatusBarView.findViewById(R.id.traffic);
+	    final View statusCarrierLabel = mStatusBarView.findViewById(R.id.status_carrier_label);
+
             final AnimatorSet lightsOutAnim = new AnimatorSet();
             lightsOutAnim.playTogether(
                     ObjectAnimator.ofFloat(notifications, View.ALPHA, 0),
@@ -2789,7 +2813,7 @@ final View traffic = mStatusBarView.findViewById(R.id.traffic);
                     ObjectAnimator.ofFloat(battery2, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(battery3, View.ALPHA, 0.5f),
                     ObjectAnimator.ofFloat(clock, View.ALPHA, 0.5f),
-ObjectAnimator.ofFloat(traffic, View.ALPHA, 0.5f)
+		    ObjectAnimator.ofFloat(traffic, View.ALPHA, 0.5f)
                 );
             lightsOutAnim.setDuration(750);
 
@@ -3707,7 +3731,40 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
             super(handler);
         }
 
+
         @Override
+	 void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[shortClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[longClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_CLOCK[doubleClick]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SCREEN_BRIGHTNESS_MODE), false, this, mCurrentUserId);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.CURRENT_UI_MODE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_HIDE_ENABLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NAV_HIDE_TIMEOUT), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_SHORT[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_LONG[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.RIBBON_TARGETS_ICONS[AokpRibbonHelper.NOTIFICATIONS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER), false, this);
+        }
+
+         @Override
+>>>>>>> d8bad5d... MIUI Style carrier text in the statusbar (1/2)
         public void onChange(boolean selfChange) {
             boolean hideSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
                                     Settings.System.QS_DISABLE_PANEL, 0) == 1;

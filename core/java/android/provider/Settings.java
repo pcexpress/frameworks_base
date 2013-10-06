@@ -2882,6 +2882,11 @@ public final class Settings {
 
 	public static final String LOCK_CLOCK_CACHED_WEATHER = "clock_cached_weather";
 
+	 /**
+         * MIUI Style carrier text in the statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_CARRIER = "status_bar_carrier";
 
         public static final String PIE_BUTTON_PRESSED_COLOR = "pie_button_pressed_color";
 
