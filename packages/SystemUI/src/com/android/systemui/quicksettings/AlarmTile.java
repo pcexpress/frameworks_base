@@ -52,10 +52,6 @@ public class AlarmTile extends QuickSettingsTile{
         mOnClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName(
-                        "com.android.deskclock",
-                        "com.android.deskclock.AlarmClock"));
                 startSettingsActivity(new Intent(AlarmClock.ACTION_SET_ALARM));
  		if (isEnabled()) {
                     flipTile(0);
