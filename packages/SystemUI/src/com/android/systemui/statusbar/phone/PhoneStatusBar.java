@@ -123,6 +123,7 @@ import com.android.systemui.statusbar.policy.WeatherPanel;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import android.content.res.Configuration;
 import com.android.systemui.statusbar.AppSidebar; 
+import com.android.systemui.aokp.AwesomeAction; 
 
 public class PhoneStatusBar extends BaseStatusBar {
     static final String TAG = "PhoneStatusBar";
