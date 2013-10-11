@@ -48,7 +48,7 @@ public class WeatherText extends TextView {
         super.onAttachedToWindow();
         if (!mAttached) {
             mAttached = true;
-            IntentFilter filter = new IntentFilter("com.aokp.romcontrol.INTENT_WEATHER_UPDATE");
+            IntentFilter filter = new IntentFilter("com.android.settings.aokp.romcontrol.INTENT_WEATHER_UPDATE");
             mContext.registerReceiver(weatherReceiver, filter, null, getHandler());
         }
     }
@@ -94,12 +94,11 @@ public class WeatherText extends TextView {
             updateSettings();
         }
     }
-
-    protected void updateSettings() {
+   protected void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
-        boolean useWeather = (Settings.System.getBoolean(resolver, Settings.System.USE_WEATHER, false)
-                && Settings.System.getInt(resolver, Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 0);
-        mShowLocation = Settings.System.getBoolean(resolver, Settings.System.WEATHER_SHOW_LOCATION, true);
+        boolean useWeather = (Settings.System.getInt(resolver, Settings.System.USE_WEATHER, 0) == 1)
+                && (Settings.System.getInt(resolver, Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 0);
+        mShowLocation = Settings.System.getInt(resolver, Settings.System.WEATHER_SHOW_LOCATION, 1) ==0;
         
         this.setVisibility(useWeather ? View.VISIBLE : View.GONE);
     }

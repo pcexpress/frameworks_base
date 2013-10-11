@@ -124,6 +124,11 @@ public class SlimActions {
                 } catch (RemoteException e) {
                 }
                 return;
+	    } else if (action.equals(ButtonsConstants.ACTION_UPDATE)){
+		Intent weatherintent = new Intent("com.android.settings.aokp.romcontrol.INTENT_WEATHER_REQUEST");
+                weatherintent.putExtra("com.android.settings.aokp.romcontrol.INTENT_EXTRA_TYPE", "updateweather");
+                weatherintent.putExtra("com.android.settings.aokp.romcontrol.INTENT_EXTRA_ISMANUAL", true);
+                context.sendBroadcastAsUser(weatherintent, new UserHandle(UserHandle.myUserId()));
             } else if (action.equals(ButtonsConstants.ACTION_WIDGETS)) {
                 if (isKeyguardShowing) {
                     return;

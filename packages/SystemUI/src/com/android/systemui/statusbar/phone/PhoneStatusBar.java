@@ -123,7 +123,7 @@ import com.android.systemui.statusbar.policy.WeatherPanel;
 import com.android.systemui.statusbar.powerwidget.PowerWidget;
 import android.content.res.Configuration;
 import com.android.systemui.statusbar.AppSidebar; 
-import com.android.systemui.aokp.AwesomeAction; 
+import com.android.internal.util.slim.SlimActions; 
 
 public class PhoneStatusBar extends BaseStatusBar {
     static final String TAG = "PhoneStatusBar";
@@ -420,6 +420,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_WEATHER_STYLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.USE_WEATHER), false, this);
               update();
         }
 
@@ -446,16 +450,16 @@ public class PhoneStatusBar extends BaseStatusBar {
             boolean notificationSettingsBtn = Settings.System.getInt(
                     resolver, Settings.System.NOTIFICATION_SETTINGS_BUTTON, 0) == 1;
 
-	    mWeatherPanelEnabled = (Settings.System.getInt(cr,
+	    mWeatherPanelEnabled = (Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_WEATHER_STYLE, 2) == 1)
-                && (Settings.System.getBoolean(cr, Settings.System.USE_WEATHER, false));
+                && (Settings.System.getInt(resolver, Settings.System.USE_WEATHER, 0) == 1);
 
             mWeatherPanel.setVisibility(mWeatherPanelEnabled ? View.VISIBLE : View.GONE);
 
-            mShortClickWeather = Settings.System.getString(cr,
+            mShortClickWeather = Settings.System.getString(resolver,
                 Settings.System.WEATHER_PANEL_SHORTCLICK);
 
-            mLongClickWeather = Settings.System.getString(cr,
+            mLongClickWeather = Settings.System.getString(resolver,
                 Settings.System.WEATHER_PANEL_LONGCLICK);
 
             if (mShortClickWeather == null || mShortClickWeather.equals("")) {
@@ -3314,17 +3318,16 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
 
     private View.OnClickListener mWeatherPanelListener = new View.OnClickListener() {
         public void onClick(View v) {
-            vibrate();
-            animateCollapsePanels();
-            AwesomeAction.launchAction(mContext, mShortClickWeather);
+           //animateCollapsePanels();
+            SlimActions.processAction(mContext, mShortClickWeather, false);
         }
     };
 
     private View.OnLongClickListener mWeatherPanelLongClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            animateCollapsePanels();
-            AwesomeAction.launchAction(mContext, mLongClickWeather);
+           // animateCollapsePanels();
+            SlimActions.processAction(mContext, mLongClickWeather, true);
             return true;
         }
     };
