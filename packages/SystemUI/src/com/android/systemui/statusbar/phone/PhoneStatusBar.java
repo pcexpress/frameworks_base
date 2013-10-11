@@ -487,7 +487,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
 
 	    mShowCarrierLabel = Settings.System.getInt(
-                    cr, Settings.System.STATUS_BAR_CARRIER, 0) == 1;
+                    resolver, Settings.System.STATUS_BAR_CARRIER, 0) == 1;
             showCarrierLabel(mShowCarrierLabel);
 
 	    int sidebarPosition = Settings.System.getInt(
@@ -3731,40 +3731,8 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
             super(handler);
         }
 
-
         @Override
-	 void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_CLOCK[shortClick]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_CLOCK[longClick]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_CLOCK[doubleClick]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SCREEN_BRIGHTNESS_MODE), false, this, mCurrentUserId);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.CURRENT_UI_MODE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAV_HIDE_ENABLE), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAV_HIDE_TIMEOUT), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.RIBBON_TARGETS_SHORT[AokpRibbonHelper.NOTIFICATIONS]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.RIBBON_TARGETS_LONG[AokpRibbonHelper.NOTIFICATIONS]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.RIBBON_TARGETS_ICONS[AokpRibbonHelper.NOTIFICATIONS]), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.WEATHER_PANEL_SHORTCLICK), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.WEATHER_PANEL_LONGCLICK), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CARRIER), false, this);
-        }
-
-         @Override
-       public void onChange(boolean selfChange) {
+        public void onChange(boolean selfChange) {
             boolean hideSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
                                     Settings.System.QS_DISABLE_PANEL, 0) == 1;
 
