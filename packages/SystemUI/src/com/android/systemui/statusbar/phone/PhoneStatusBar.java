@@ -3764,8 +3764,7 @@ ObjectAnimator.ofFloat(traffic, View.ALPHA, 1)
         }
 
          @Override
->>>>>>> d8bad5d... MIUI Style carrier text in the statusbar (1/2)
-        public void onChange(boolean selfChange) {
+       public void onChange(boolean selfChange) {
             boolean hideSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
                                     Settings.System.QS_DISABLE_PANEL, 0) == 1;
 
